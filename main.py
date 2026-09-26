@@ -7,7 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import BOT_TOKEN
-from handlers import start, faq, apply
+from handlers import start, faq, apply, vacancies
 
 
 async def main():
@@ -18,6 +18,7 @@ async def main():
 
     dp.include_router(start.router)
     dp.include_router(faq.router)
+    dp.include_router(vacancies.router)
     dp.include_router(apply.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
