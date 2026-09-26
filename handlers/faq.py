@@ -6,7 +6,7 @@ from keyboards import faq_menu_kb, faq_back_kb, FAQ_DATA
 router = Router()
 
 
-@router.message(F.text == "❓ Ko'p so'raladigan savollar (FAQ)")
+@router.message(F.text == "❓ FAQ")
 async def show_faq_menu(message: Message):
     await message.answer(
         "Quyidagi savollardan birini tanlang:",
