@@ -4,21 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aloqabor — Karyera</title>
+<link rel="icon" href="logo.png">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0B1120;
-    --surface: #141B2E;
-    --surface-2: #1B2540;
-    --border: #262F4A;
-    --text: #E8ECF4;
-    --text-muted: #8B93A7;
-    --accent: #22D3B4;
-    --accent-dim: #1AA88F;
-    --amber: #F5A623;
+    --bg: #0A0C12;
+    --surface: #14171F;
+    --surface-2: #1B1F2B;
+    --border: #262B3A;
+    --text: #ECEEF3;
+    --text-muted: #8B93A5;
+    --accent: #2F6BFF;
+    --accent-dim: #234FC2;
+    --accent-soft: rgba(47,107,255,.14);
     --danger: #F0537A;
     --radius: 10px;
     --safe-top: env(safe-area-inset-top, 0px);
@@ -38,7 +39,7 @@
   }
   h1,h2,h3,.brand{ font-family: 'Sora', sans-serif; }
 
-  ::selection{ background: var(--accent); color: #06251F; }
+  ::selection{ background: var(--accent); color: #FFFFFF; }
 
   /* ---------- Hero ---------- */
   .hero{
@@ -47,47 +48,49 @@
     text-align: center;
     overflow: hidden;
   }
-  .rings{
-    position: relative;
-    width: 72px; height: 72px;
+  .logo-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 14px 22px;
     margin: 0 auto 14px;
+    box-shadow: 0 10px 28px -8px rgba(47,107,255,.45);
+    position: relative;
   }
-  .ring{
-    position: absolute; inset: 0;
-    border: 1.5px solid var(--accent);
-    border-radius: 50%;
-    opacity: 0;
-    animation: pulse 2.8s ease-out infinite;
-  }
-  .ring:nth-child(2){ animation-delay: .6s; }
-  .ring:nth-child(3){ animation-delay: 1.2s; }
-  .rings::after{
+  .logo-badge::after{
     content: "";
     position: absolute;
-    left: 50%; top: 50%;
-    width: 14px; height: 14px;
-    background: var(--accent);
-    border-radius: 50%;
-    transform: translate(-50%,-50%);
-    box-shadow: 0 0 16px 2px rgba(34,211,180,.6);
+    inset: -1px;
+    border-radius: 18px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(47,107,255,.6), rgba(47,107,255,0) 60%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
-  @keyframes pulse{
-    0%   { transform: scale(.3); opacity: .9; }
-    80%  { opacity: 0; }
-    100% { transform: scale(1.9); opacity: 0; }
+  .logo-badge img{
+    display: block;
+    height: 46px;
+    width: auto;
   }
-  @media (prefers-reduced-motion: reduce){
-    .ring{ animation: none; opacity: .35; }
-  }
-
   .brand{
-    font-size: 26px; font-weight: 800; letter-spacing: -.01em;
+    font-size: 15px; font-weight: 600; letter-spacing: .01em;
     margin: 0;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: 11px;
+    opacity: .7;
   }
   .tagline{
-    color: var(--text-muted);
-    font-size: 14px;
-    margin: 6px 0 0;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 2px 0 0;
+    font-family: 'Sora', sans-serif;
   }
 
   /* ---------- Tabs ---------- */
@@ -142,7 +145,13 @@
     border-radius: var(--radius);
     padding: 16px 14px;
   }
-  .pillar .icon{ font-size: 22px; }
+  .pillar .icon{
+    font-size: 18px;
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-soft);
+    border-radius: 10px;
+  }
   .pillar h3{
     font-size: 14px;
     margin: 10px 0 6px;
@@ -183,10 +192,13 @@
   .vac-card{
     background: var(--surface);
     border: 1px solid var(--border);
+    border-left: 2px solid transparent;
     border-radius: var(--radius);
     margin-bottom: 10px;
     overflow: hidden;
+    transition: border-color .15s;
   }
+  .vac-card.open{ border-left-color: var(--accent); }
   .vac-head{
     display: flex;
     align-items: center;
@@ -194,8 +206,27 @@
     padding: 14px;
     cursor: pointer;
   }
-  .vac-head .emoji{ font-size: 20px; }
-  .vac-head .title{ flex: 1; font-weight: 600; font-size: 14.5px; }
+  .vac-head .emoji{
+    font-size: 17px;
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-soft);
+    border-radius: 9px;
+    flex-shrink: 0;
+  }
+  .vac-head .title-wrap{ flex: 1; min-width: 0; }
+  .vac-head .title{ font-weight: 600; font-size: 14.5px; display: block; }
+  .tag-hot{
+    display: inline-block;
+    margin-top: 3px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 7px;
+    border-radius: 5px;
+    letter-spacing: .02em;
+  }
   .vac-head .chev{
     color: var(--text-muted);
     transition: transform .2s;
@@ -225,7 +256,7 @@
   .btn-apply{
     width: 100%;
     background: var(--accent);
-    color: #06251F;
+    color: #FFFFFF;
     border: none;
     border-radius: 8px;
     padding: 11px;
@@ -329,8 +360,8 @@
 <body>
 
   <div class="hero">
-    <div class="rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
-    <h1 class="brand">Aloqabor</h1>
+    <div class="logo-badge"><img src="logo.png" alt="Aloqabor"></div>
+    <p class="brand">Karyera markazi</p>
     <p class="tagline">Aloqa va texnologiyani birlashtiramiz</p>
   </div>
 
@@ -433,27 +464,27 @@
   // Bot tomonidagi keyboards.py VACANCY_DETAILS bilan bir xil bo'lishi kerak
   const VACANCIES = [
     {
-      emoji: "👥", name: "HR menejeri",
+      emoji: "👥", name: "HR menejeri", hot: false,
       desc: "Xodimlarni topish, suhbat o'tkazish va jamoani rivojlantirish bilan shug'ullanasiz.",
       requirements: ["HR sohasida kamida 1 yillik tajriba", "Muloqotchan va tashkilotchi", "Excel/Google Sheets bilan ishlay olish"]
     },
     {
-      emoji: "🎧", name: "Call-center operatori",
+      emoji: "🎧", name: "Call-center operatori", hot: true,
       desc: "Mijozlar bilan telefon orqali muloqot qilib, savollariga javob berasiz va buyurtmalarni qayd etasiz.",
       requirements: ["Toza va tushunarli nutq", "Sabr-toqatli va diqqatli", "Kompyuterda ishlay olish"]
     },
     {
-      emoji: "💻", name: "IT dasturchi",
+      emoji: "💻", name: "IT dasturchi", hot: true,
       desc: "Kompaniyaning ichki tizimlari, botlar va avtomatlashtirish loyihalarini yaratasiz va qo'llab-quvvatlaysiz.",
       requirements: ["Python yoki JavaScript bilishi", "Git bilan ishlay olish", "Mustaqil o'rganishga qiziqish"]
     },
     {
-      emoji: "🔍", name: "Sifat nazorati mutaxassisi (QA)",
+      emoji: "🔍", name: "Sifat nazorati mutaxassisi (QA)", hot: false,
       desc: "Call-center operatorlarining qo'ng'iroqlarini tinglab, xizmat sifatini baholaysiz.",
       requirements: ["Diqqatlilik va tafsilotlarga e'tibor", "Konstruktiv fikr bildira olish", "Hisobot yuritish ko'nikmasi"]
     },
     {
-      emoji: "📊", name: "Loyiha menejeri",
+      emoji: "📊", name: "Loyiha menejeri", hot: false,
       desc: "IT avtomatlashtirish loyihalarini rejalashtirasiz va jamoani muvofiqlashtirasiz.",
       requirements: ["Loyihalarni boshqarishda tajriba (afzallik)", "Aniq va tizimli fikrlash", "Jamoa bilan ishlay olish"]
     }
@@ -477,7 +508,10 @@
     card.innerHTML = `
       <div class="vac-head" data-i="${i}">
         <span class="emoji">${v.emoji}</span>
-        <span class="title">${v.name}</span>
+        <span class="title-wrap">
+          <span class="title">${v.name}</span>
+          ${v.hot ? '<span class="tag-hot">🔥 Talab yuqori</span>' : ''}
+        </span>
         <span class="chev">▾</span>
       </div>
       <div class="vac-body">
@@ -537,8 +571,8 @@
   function setupMainButton() {
     if (!tg) return;
     tg.MainButton.setText('Ariza yuborish');
-    tg.MainButton.color = '#22D3B4';
-    tg.MainButton.textColor = '#06251F';
+    tg.MainButton.color = '#2F6BFF';
+    tg.MainButton.textColor = '#FFFFFF';
     tg.MainButton.show();
     tg.MainButton.offClick(handleSubmit);
     tg.MainButton.onClick(handleSubmit);
