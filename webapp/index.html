@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aloqabor — Karyera</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B1120;
+    --surface: #141B2E;
+    --surface-2: #1B2540;
+    --border: #262F4A;
+    --text: #E8ECF4;
+    --text-muted: #8B93A7;
+    --accent: #22D3B4;
+    --accent-dim: #1AA88F;
+    --amber: #F5A623;
+    --danger: #F0537A;
+    --radius: 10px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ height: 100%; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1,h2,h3,.brand{ font-family: 'Sora', sans-serif; }
+
+  ::selection{ background: var(--accent); color: #06251F; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position: relative;
+    padding: 32px 20px 24px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .rings{
+    position: relative;
+    width: 72px; height: 72px;
+    margin: 0 auto 14px;
+  }
+  .ring{
+    position: absolute; inset: 0;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    animation: pulse 2.8s ease-out infinite;
+  }
+  .ring:nth-child(2){ animation-delay: .6s; }
+  .ring:nth-child(3){ animation-delay: 1.2s; }
+  .rings::after{
+    content: "";
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    box-shadow: 0 0 16px 2px rgba(34,211,180,.6);
+  }
+  @keyframes pulse{
+    0%   { transform: scale(.3); opacity: .9; }
+    80%  { opacity: 0; }
+    100% { transform: scale(1.9); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ring{ animation: none; opacity: .35; }
+  }
+
+  .brand{
+    font-size: 26px; font-weight: 800; letter-spacing: -.01em;
+    margin: 0;
+  }
+  .tagline{
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 6px 0 0;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs{
+    display: flex;
+    gap: 4px;
+    margin: 4px 16px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    position: sticky;
+    top: calc(var(--safe-top) + 8px);
+    z-index: 5;
+  }
+  .tab{
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    user-select: none;
+  }
+  .tab.active{
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  .screen{ display: none; padding: 20px 16px 100px; }
+  .screen.active{ display: block; }
+
+  /* ---------- Company screen ---------- */
+  .lead{
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 0 20px;
+  }
+  .pillars{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .pillar{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+  }
+  .pillar .icon{ font-size: 22px; }
+  .pillar h3{
+    font-size: 14px;
+    margin: 10px 0 6px;
+  }
+  .pillar p{
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .connector{
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 20px 0;
+  }
+
+  .why-list{ list-style: none; margin: 0; padding: 0; }
+  .why-list li{
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .why-list li:last-child{ border-bottom: none; }
+  .why-list .dot{
+    flex-shrink: 0;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: 6px;
+  }
+
+  /* ---------- Vacancy list ---------- */
+  .vac-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .vac-head{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    cursor: pointer;
+  }
+  .vac-head .emoji{ font-size: 20px; }
+  .vac-head .title{ flex: 1; font-weight: 600; font-size: 14.5px; }
+  .vac-head .chev{
+    color: var(--text-muted);
+    transition: transform .2s;
+    font-size: 12px;
+  }
+  .vac-card.open .chev{ transform: rotate(180deg); }
+  .vac-body{
+    display: none;
+    padding: 0 14px 16px;
+  }
+  .vac-card.open .vac-body{ display: block; }
+  .vac-body p{
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin: 0 0 10px;
+  }
+  .vac-body ul{
+    margin: 0 0 14px;
+    padding-left: 18px;
+  }
+  .vac-body li{
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+  .btn-apply{
+    width: 100%;
+    background: var(--accent);
+    color: #06251F;
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+  }
+  .btn-apply:active{ background: var(--accent-dim); }
+
+  /* ---------- Apply form (slide-in) ---------- */
+  .form-panel{
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    transform: translateY(100%);
+    transition: transform .28s ease;
+    z-index: 20;
+    overflow-y: auto;
+    padding: 20px 16px calc(100px + var(--safe-bottom));
+    padding-top: calc(20px + var(--safe-top));
+  }
+  .form-panel.open{ transform: translateY(0); }
+  .form-header{
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .form-header .back{
+    font-size: 20px; color: var(--text-muted); cursor: pointer;
+    padding: 4px 8px; margin-left: -8px;
+  }
+  .form-header .ft{ font-size: 16px; font-weight: 700; }
+  .form-header .fs{ font-size: 12.5px; color: var(--text-muted); }
+
+  .field{ margin-bottom: 16px; }
+  .field label{
+    display: block;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .field input, .field select, .field textarea{
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 12px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline: none;
+    border-color: var(--accent);
+  }
+  .field textarea{ min-height: 88px; resize: vertical; }
+  .hint{
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .error-text{
+    font-size: 11.5px;
+    color: var(--danger);
+    margin-top: 6px;
+    display: none;
+  }
+  .field.invalid input, .field.invalid select, .field.invalid textarea{
+    border-color: var(--danger);
+  }
+  .field.invalid .error-text{ display: block; }
+
+  /* ---------- Success screen ---------- */
+  .success{
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+    z-index: 30;
+  }
+  .success.open{ display: flex; }
+  .success .mark{
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(34,211,180,.12);
+    border: 1.5px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    margin-bottom: 18px;
+    color: var(--accent);
+  }
+  .success h2{ margin: 0 0 8px; font-size: 18px; }
+  .success p{ color: var(--text-muted); font-size: 13.5px; max-width: 280px; line-height: 1.6; margin: 0; }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
+    <h1 class="brand">Aloqabor</h1>
+    <p class="tagline">Aloqa va texnologiyani birlashtiramiz</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="company">🏢 Kompaniya</div>
+    <div class="tab" data-tab="vacancies">💼 Vakansiyalar</div>
+  </div>
+
+  <!-- COMPANY SCREEN -->
+  <div class="screen active" id="screen-company">
+    <p class="lead">
+      Aloqabor — outsourcing call-center xizmati va IT avtomatlashtirish yo'nalishida
+      ishlaydigan kompaniya. Biz mijozlar bilan aloqani va biznes-jarayonlarni
+      texnologiya yordamida soddalashtiramiz.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="icon">📞</div>
+        <h3>Call-center xizmatlari</h3>
+        <p>Mijozlar bilan aloqa, buyurtmalarni qabul qilish va qo'llab-quvvatlash xizmatini boshqa kompaniyalar uchun outsourcing asosida yuritamiz.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">⚙️</div>
+        <h3>IT avtomatlashtirish</h3>
+        <p>Botlar, CRM va ichki tizimlarni ishlab chiqib, biznes-jarayonlarni avtomatlashtiramiz.</p>
+      </div>
+    </div>
+
+    <hr class="connector">
+
+    <h3 style="font-size:14px;margin:0 0 10px;">Nima uchun biz bilan ishlash</h3>
+    <ul class="why-list">
+      <li><span class="dot"></span>Rasmiy mehnat shartnomasi va ish haqi barqarorligi</li>
+      <li><span class="dot"></span>O'sish va ko'nikmalarni rivojlantirish imkoniyati</li>
+      <li><span class="dot"></span>Do'stona va tartibli jamoa muhiti</li>
+    </ul>
+  </div>
+
+  <!-- VACANCIES SCREEN -->
+  <div class="screen" id="screen-vacancies">
+    <div id="vac-list"></div>
+  </div>
+
+  <!-- APPLY FORM -->
+  <div class="form-panel" id="form-panel">
+    <div class="form-header">
+      <span class="back" id="form-back">←</span>
+      <div>
+        <div class="ft">Ariza topshirish</div>
+        <div class="fs" id="form-vacancy-name">—</div>
+      </div>
+    </div>
+
+    <div class="field" id="f-name">
+      <label>To'liq ism-sharif *</label>
+      <input type="text" id="in-name" placeholder="Familiya Ism">
+      <div class="error-text">Iltimos, ism-sharifingizni kiriting</div>
+    </div>
+
+    <div class="field" id="f-phone">
+      <label>Telefon raqami *</label>
+      <input type="tel" id="in-phone" placeholder="+998 90 123 45 67">
+      <div class="error-text">Iltimos, telefon raqamingizni kiriting</div>
+    </div>
+
+    <div class="field" id="f-age">
+      <label>Yoshingiz *</label>
+      <input type="number" id="in-age" placeholder="24" min="14" max="80">
+      <div class="error-text">Iltimos, yoshingizni kiriting</div>
+    </div>
+
+    <div class="field" id="f-vacancy">
+      <label>Lavozim *</label>
+      <select id="in-vacancy"></select>
+    </div>
+
+    <div class="field" id="f-exp">
+      <label>Ta'lim / ish tajribasi *</label>
+      <textarea id="in-exp" placeholder="O'quv muassasasi, oldingi ish joylari, ko'nikmalar..."></textarea>
+      <div class="error-text">Iltimos, qisqacha ma'lumot kiriting</div>
+    </div>
+
+    <p class="hint">
+      Yuborgach, botda CV faylingizni (yoki qo'shimcha matn) yuborishingiz so'raladi.
+    </p>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success" id="success-screen">
+    <div class="mark">✓</div>
+    <h2>Ariza yuborildi!</h2>
+    <p>Endi botga qayting va CV faylingizni (yoki qo'shimcha ma'lumot) yuboring. HR bo'limi tez orada siz bilan bog'lanadi.</p>
+  </div>
+
+<script>
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) { tg.ready(); tg.expand(); }
+
+  // Bot tomonidagi keyboards.py VACANCY_DETAILS bilan bir xil bo'lishi kerak
+  const VACANCIES = [
+    {
+      emoji: "👥", name: "HR menejeri",
+      desc: "Xodimlarni topish, suhbat o'tkazish va jamoani rivojlantirish bilan shug'ullanasiz.",
+      requirements: ["HR sohasida kamida 1 yillik tajriba", "Muloqotchan va tashkilotchi", "Excel/Google Sheets bilan ishlay olish"]
+    },
+    {
+      emoji: "🎧", name: "Call-center operatori",
+      desc: "Mijozlar bilan telefon orqali muloqot qilib, savollariga javob berasiz va buyurtmalarni qayd etasiz.",
+      requirements: ["Toza va tushunarli nutq", "Sabr-toqatli va diqqatli", "Kompyuterda ishlay olish"]
+    },
+    {
+      emoji: "💻", name: "IT dasturchi",
+      desc: "Kompaniyaning ichki tizimlari, botlar va avtomatlashtirish loyihalarini yaratasiz va qo'llab-quvvatlaysiz.",
+      requirements: ["Python yoki JavaScript bilishi", "Git bilan ishlay olish", "Mustaqil o'rganishga qiziqish"]
+    },
+    {
+      emoji: "🔍", name: "Sifat nazorati mutaxassisi (QA)",
+      desc: "Call-center operatorlarining qo'ng'iroqlarini tinglab, xizmat sifatini baholaysiz.",
+      requirements: ["Diqqatlilik va tafsilotlarga e'tibor", "Konstruktiv fikr bildira olish", "Hisobot yuritish ko'nikmasi"]
+    },
+    {
+      emoji: "📊", name: "Loyiha menejeri",
+      desc: "IT avtomatlashtirish loyihalarini rejalashtirasiz va jamoani muvofiqlashtirasiz.",
+      requirements: ["Loyihalarni boshqarishda tajriba (afzallik)", "Aniq va tizimli fikrlash", "Jamoa bilan ishlay olish"]
+    }
+  ];
+
+  // ---- Tabs ----
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('screen-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---- Render vacancy list ----
+  const vacList = document.getElementById('vac-list');
+  VACANCIES.forEach((v, i) => {
+    const card = document.createElement('div');
+    card.className = 'vac-card';
+    card.innerHTML = `
+      <div class="vac-head" data-i="${i}">
+        <span class="emoji">${v.emoji}</span>
+        <span class="title">${v.name}</span>
+        <span class="chev">▾</span>
+      </div>
+      <div class="vac-body">
+        <p>${v.desc}</p>
+        <ul>${v.requirements.map(r => `<li>${r}</li>`).join('')}</ul>
+        <button class="btn-apply" data-i="${i}">📝 Shu lavozimga ariza berish</button>
+      </div>
+    `;
+    vacList.appendChild(card);
+  });
+
+  vacList.addEventListener('click', (e) => {
+    const head = e.target.closest('.vac-head');
+    if (head) {
+      head.closest('.vac-card').classList.toggle('open');
+      return;
+    }
+    const btn = e.target.closest('.btn-apply');
+    if (btn) openForm(parseInt(btn.dataset.i));
+  });
+
+  // Populate vacancy select
+  const vacSelect = document.getElementById('in-vacancy');
+  VACANCIES.forEach((v, i) => {
+    const opt = document.createElement('option');
+    opt.value = v.name;
+    opt.textContent = v.name;
+    vacSelect.appendChild(opt);
+  });
+
+  // ---- Form open/close ----
+  const formPanel = document.getElementById('form-panel');
+  const formVacancyName = document.getElementById('form-vacancy-name');
+
+  function openForm(index) {
+    const v = VACANCIES[index];
+    formVacancyName.textContent = v.name;
+    vacSelect.value = v.name;
+
+    const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+    if (user) {
+      document.getElementById('in-name').value = [user.first_name, user.last_name].filter(Boolean).join(' ');
+    }
+
+    formPanel.classList.add('open');
+    setupMainButton();
+  }
+
+  document.getElementById('form-back').addEventListener('click', closeForm);
+
+  function closeForm() {
+    formPanel.classList.remove('open');
+    if (tg) tg.MainButton.hide();
+  }
+
+  // ---- Telegram MainButton as submit ----
+  function setupMainButton() {
+    if (!tg) return;
+    tg.MainButton.setText('Ariza yuborish');
+    tg.MainButton.color = '#22D3B4';
+    tg.MainButton.textColor = '#06251F';
+    tg.MainButton.show();
+    tg.MainButton.offClick(handleSubmit);
+    tg.MainButton.onClick(handleSubmit);
+  }
+
+  function validate() {
+    let ok = true;
+    const checks = [
+      ['f-name', 'in-name'],
+      ['f-phone', 'in-phone'],
+      ['f-age', 'in-age'],
+      ['f-exp', 'in-exp'],
+    ];
+    checks.forEach(([fieldId, inputId]) => {
+      const field = document.getElementById(fieldId);
+      const val = document.getElementById(inputId).value.trim();
+      if (!val) {
+        field.classList.add('invalid');
+        ok = false;
+      } else {
+        field.classList.remove('invalid');
+      }
+    });
+    return ok;
+  }
+
+  function handleSubmit() {
+    if (!validate()) {
+      if (tg) tg.HapticFeedback.notificationOccurred('error');
+      return;
+    }
+
+    const payload = {
+      full_name: document.getElementById('in-name').value.trim(),
+      phone: document.getElementById('in-phone').value.trim(),
+      age: document.getElementById('in-age').value.trim(),
+      vacancy: vacSelect.value,
+      experience: document.getElementById('in-exp').value.trim(),
+    };
+
+    if (tg) {
+      tg.MainButton.hide();
+      tg.HapticFeedback.notificationOccurred('success');
+      tg.sendData(JSON.stringify(payload));
+      document.getElementById('success-screen').classList.add('open');
+      setTimeout(() => tg.close(), 1800);
+    } else {
+      // Brauzerda sinov uchun (Telegram tashqarisida)
+      alert('Demo rejim: ' + JSON.stringify(payload, null, 2));
+    }
+  }
+</script>
+</body>
+</html>
