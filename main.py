@@ -1,9 +1,15 @@
 import asyncio
+import hashlib
+import hmac
+import html
 import json
 import logging
 import os
+import time
+from urllib.parse import parse_qsl
 
 from aiogram import Bot, Dispatcher, Router, F
+from aiohttp import web
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
@@ -18,6 +24,7 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
     WebAppInfo,
+    MenuButtonWebApp,
 )
 from dotenv import load_dotenv
 
@@ -156,6 +163,7 @@ class ApplyForm(StatesGroup):
     experience = State()
     cv = State()
     confirm = State()
+    cv_extra = State()
 
 
 # ======================================================================
@@ -229,7 +237,7 @@ router = Router()
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
-        f"Assalomu alaykum, {message.from_user.full_name}! 👋\n\n"
+        f"Assalomu alaykum, {esc(message.from_user.full_name)}! 👋\n\n"
         f"Men <b>{COMPANY_NAME}</b> kompaniyasining HR botiman.\n\n"
         "💼 Bo'sh ish o'rinlari bilan tanishishingiz\n"
         "🚀 Mini ilova orqali qulay tarzda ariza topshirishingiz\n"
@@ -414,23 +422,25 @@ async def show_summary(message: Message, state: FSMContext):
 @router.message(ApplyForm.confirm, F.text == "✅ Tasdiqlash va yuborish")
 async def confirm_application(message: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
+    g = lambda k: esc(data.get(k))
     text = (
         "🆕 <b>Yangi ariza tushdi!</b>\n\n"
-        f"👤 F.I.Sh: {data.get('full_name')}\n"
-        f"📱 Telefon: {data.get('phone')}\n"
-        f"🎂 Yosh: {data.get('age')}\n"
-        f"💼 Vakansiya: {data.get('vacancy')}\n"
-        f"🎓 Ta'lim/tajriba: {data.get('experience')}\n"
-        f"🆔 Telegram: @{message.from_user.username or 'yoq'} (ID: {message.from_user.id})\n"
+        f"👤 F.I.Sh: {g('full_name')}\n"
+        f"📱 Telefon: {g('phone')}\n"
+        f"🎂 Yosh: {g('age')}\n"
+        f"💼 Vakansiya: {g('vacancy')}\n"
+        f"🎓 Ta'lim/tajriba: {g('experience')}\n"
+        f"🆔 Telegram: @{esc(message.from_user.username or 'yoq')} (ID: {message.from_user.id})\n"
     )
-    for admin_id in ADMIN_IDS:
-        try:
-            if data.get("cv_type") == "document":
-                await bot.send_document(admin_id, data.get("cv_file_id"), caption=text, parse_mode="HTML")
-            else:
-                await bot.send_message(admin_id, text + f"\n📄 Qo'shimcha:\n{data.get('cv_text')}", parse_mode="HTML")
-        except Exception:
-            pass
+    if data.get("cv_type") != "document":
+        text += f"\n📄 Qo'shimcha:\n{g('cv_text')}"
+    await notify_admins(bot, text[:4000])
+    if data.get("cv_type") == "document":
+        for admin_id in ADMIN_IDS:
+            try:
+                await bot.send_document(admin_id, data.get("cv_file_id"), caption="📎 CV")
+            except Exception:
+                pass
     await state.clear()
     await message.answer(
         "✅ Arizangiz muvaffaqiyatli qabul qilindi! HR bo'limi tez orada siz bilan bog'lanadi.\n\nRahmat! 🙏",
@@ -445,21 +455,129 @@ async def handle_webapp_data(message: Message, state: FSMContext, bot: Bot):
     except (ValueError, AttributeError):
         await message.answer("Ma'lumotlarni o'qishda xatolik yuz berdi. Qaytadan urinib ko'ring.")
         return
-
-    await state.clear()
-    await state.update_data(
-        full_name=payload.get("full_name"), phone=payload.get("phone"),
-        age=payload.get("age"), vacancy=payload.get("vacancy"),
-        experience=payload.get("experience"), source="webapp",
-    )
-    await state.set_state(ApplyForm.cv)
+    user = {"id": message.from_user.id, "username": message.from_user.username}
+    if not await notify_admins(bot, build_admin_text(payload, user)):
+        await message.answer("Arizani yuborib bo'lmadi. Keyinroq qayta urinib ko'ring.")
+        return
+    await state.set_state(ApplyForm.cv_extra)
     await message.answer(
-        "✅ Mini ilovadan ma'lumotlaringiz qabul qilindi!\n\n"
-        f"👤 {payload.get('full_name')}\n💼 {payload.get('vacancy')}\n\n"
-        "Endi, iltimos, CV (rezyume) faylingizni yuboring (PDF/Word) "
-        "yoki o'zingiz haqingizda qo'shimcha matn ko'rinishida yozing:",
+        THANKS.get(payload.get("lang"), THANKS["uz"])
+        + "\n\n📎 Xohlasangiz, CV faylingizni shu yerga yuboring.",
         reply_markup=main_menu(),
     )
+
+
+@router.message(ApplyForm.cv_extra, F.document)
+async def cv_extra_doc(message: Message, state: FSMContext, bot: Bot):
+    for admin_id in ADMIN_IDS:
+        try:
+            await bot.send_document(
+                admin_id, message.document.file_id,
+                caption=f"📎 CV — {esc(message.from_user.full_name)} (ID: {message.from_user.id})",
+                parse_mode="HTML",
+            )
+        except Exception:
+            pass
+    await state.clear()
+    await message.answer("✅ CV qabul qilindi. Rahmat!", reply_markup=main_menu())
+
+
+# ======================================================================
+#  MINI ILOVA UCHUN SERVER (ariza qabul qilish + webapp fayllarini berish)
+# ======================================================================
+
+WEBAPP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webapp")
+esc = lambda v: html.escape(str(v if v is not None else ""))
+
+
+def verify_init_data(init_data: str, token: str, max_age: int = 172800):
+    """Telegram Mini App initData'ni tekshiradi. To'g'ri bo'lsa user (dict) qaytaradi."""
+    try:
+        pairs = dict(parse_qsl(init_data, keep_blank_values=True))
+        got = pairs.pop("hash", "")
+        check = "\n".join(f"{k}={v}" for k, v in sorted(pairs.items()))
+        secret = hmac.new(b"WebAppData", token.encode(), hashlib.sha256).digest()
+        calc = hmac.new(secret, check.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(calc, got) or time.time() - int(pairs.get("auth_date", 0)) > max_age:
+            return None
+        return json.loads(pairs.get("user", "{}"))
+    except Exception:
+        return None
+
+
+def build_admin_text(p: dict, user: dict) -> str:
+    g = lambda k: esc(p.get(k, ""))
+    uname = user.get("username")
+    return (
+        "🆕 <b>Yangi ariza (Mini App)</b>\n\n"
+        f"💼 Vakansiya: <b>{g('vacancy')}</b>\n"
+        f"👤 F.I.Sh: {g('full_name')}\n"
+        f"🎂 Tug'ilgan sana: {g('birth_date')} ({g('age')} yosh)\n"
+        f"📱 Telefon: {g('phone')}\n"
+        f"✉️ Email: {g('email')}\n"
+        f"📍 Yashash joyi: {g('live_region')}, {g('district')}\n"
+        f"🏢 Ish joyi: {g('work_region')} — {g('branch')}\n"
+        f"🎓 Ta'lim: {g('education')}\n"
+        f"🛠 Tajriba: {g('experience')}\n"
+        f"📝 Qo'shimcha: {g('about') or '—'}\n"
+        f"🆔 Telegram: {'@' + esc(uname) if uname else 'yoq'} (ID: {user.get('id')})"
+    )[:4000]
+
+
+async def notify_admins(bot: Bot, text: str) -> bool:
+    sent = False
+    for admin_id in ADMIN_IDS:
+        try:
+            await bot.send_message(admin_id, text, parse_mode="HTML")
+            sent = True
+        except Exception as e:
+            logging.warning("Adminga yuborib bo'lmadi (%s): %s", admin_id, e)
+    return sent
+
+
+THANKS = {
+    "uz": "✅ Arizangiz qabul qilindi! HR bo'limi tez orada siz bilan bog'lanadi.",
+    "ru": "✅ Ваша заявка принята! HR-отдел скоро свяжется с вами.",
+    "en": "✅ Your application has been received! The HR team will contact you soon.",
+}
+
+
+async def api_apply(request: web.Request):
+    bot: Bot = request.app["bot"]
+    try:
+        data = await request.json()
+        user = verify_init_data(data.get("initData", ""), BOT_TOKEN)
+        if not user:
+            return web.json_response({"ok": False, "error": "auth"}, status=401)
+        p = data.get("payload") or {}
+        if not await notify_admins(bot, build_admin_text(p, user)):
+            return web.json_response({"ok": False, "error": "delivery"}, status=502)
+        try:
+            await bot.send_message(user["id"], THANKS.get(p.get("lang"), THANKS["uz"]))
+        except Exception:
+            pass
+        return web.json_response({"ok": True})
+    except Exception:
+        logging.exception("api_apply xatosi")
+        return web.json_response({"ok": False}, status=400)
+
+
+async def index_page(request: web.Request):
+    return web.FileResponse(
+        os.path.join(WEBAPP_DIR, "index.html"), headers={"Cache-Control": "no-cache"}
+    )
+
+
+async def start_web_server(bot: Bot):
+    app = web.Application(client_max_size=1024 * 1024)
+    app["bot"] = bot
+    app.router.add_get("/", index_page)
+    app.router.add_get("/health", lambda r: web.Response(text="ok"))
+    app.router.add_post("/api/apply", api_apply)
+    app.router.add_static("/", WEBAPP_DIR, show_index=False)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    await web.TCPSite(runner, "0.0.0.0", int(os.getenv("PORT", "8080"))).start()
 
 
 # ======================================================================
@@ -472,6 +590,14 @@ async def main():
     dp = Dispatcher(storage=MemoryStorage())
     dp.include_router(router)
     await bot.delete_webhook(drop_pending_updates=True)
+    await start_web_server(bot)
+    if WEBAPP_URL:
+        try:
+            await bot.set_chat_menu_button(
+                menu_button=MenuButtonWebApp(text="Karyera", web_app=WebAppInfo(url=WEBAPP_URL))
+            )
+        except Exception as e:
+            logging.warning("Menyu tugmasini o'rnatib bo'lmadi: %s", e)
     await dp.start_polling(bot)
 
 
