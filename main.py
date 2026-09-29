@@ -44,13 +44,18 @@ if not ADMIN_IDS:
 
 COMPANY_NAME = "Aloqabor"
 COMPANY_TAGLINE = "Aloqa va texnologiyani birlashtiramiz"
-COMPANY_DESCRIPTION = (
-    "Aloqabor — outsourcing call-center xizmati va IT avtomatlashtirish "
+
+# "📁 Portfolio" tugmasi bosilganda chiqadigan matn
+PORTFOLIO_TEXT = (
+    "<b>Aloqabor</b> — outsourcing call-center xizmati va IT avtomatlashtirish "
     "yo'nalishida ishlaydigan kompaniya.\n\n"
-    "📞 <b>Call-center xizmatlari</b> — mijozlar bilan aloqa, buyurtmalarni qabul qilish, "
-    "qo'llab-quvvatlash xizmatini boshqa kompaniyalar uchun outsourcing asosida yuritamiz.\n\n"
-    "⚙️ <b>IT avtomatlashtirish</b> — biznes-jarayonlarni avtomatlashtirish, botlar, "
-    "CRM va ichki tizimlarni ishlab chiqamiz."
+    "Jamoamiz turli sohalarda bir qancha muvaffaqiyatli loyihalarni amalga oshirgan:\n\n"
+    "🏢 Yirik savdo kompaniyalari uchun call-center xizmati\n"
+    "🎓 O'quv markazlari uchun ro'yxatga olish botlari\n"
+    "🛒 Onlayn-do'konlar uchun buyurtma qabul qiluvchi botlar\n"
+    "🏥 Tibbiyot markazlari uchun navbat botlari\n\n"
+    "Loyiha namunalari va batafsil case-study'lar bilan suhbat davomida yaqindan "
+    "tanishtiramiz. Jamoamizga qo'shilishga tayyormisiz? 🤝"
 )
 
 # Mini ilova (Telegram WebApp) manzili. GitHub Pages'ga joylashtirgach shu yerga to'liq https havolani kiriting.
@@ -108,44 +113,53 @@ VACANCIES = list(VACANCY_DETAILS.keys())
 
 # FAQ — shu lug'atni o'zgartirish orqali savol-javoblarni boshqarasiz
 FAQ_DATA = {
-    "about": {
-        "question": "🏢 Aloqabor nima bilan shug'ullanadi?",
+    "interview": {
+        "question": "🎯 Suhbat jarayoni qanday o'tadi?",
         "answer": (
-            "Aloqabor ikki yo'nalishda ishlaydi: boshqa kompaniyalar uchun outsourcing "
-            "asosida call-center xizmati ko'rsatish va biznes-jarayonlarni IT orqali "
-            "avtomatlashtirish (botlar, CRM, ichki tizimlar)."
+            "Ariza yuborganingizdan so'ng, mos nomzodlar bilan HR bo'limi 1–2 ish kuni ichida "
+            "bog'lanadi. Suhbat odatda ikki bosqichda o'tadi: avval qisqa telefon suhbati, "
+            "so'ngra ofisda (yoki onlayn) yakuniy uchrashuv. Har bir bosqich natijasi haqida "
+            "sizga albatta xabar beramiz."
         ),
     },
     "vacation": {
         "question": "🏖 Ta'til qanday beriladi?",
         "answer": (
-            "Har bir xodim yiliga 24 ish kuni oddiy ta'tilga huquqli. "
-            "Ta'til so'rovini kamida 2 hafta oldin HR bo'limiga yuborish tavsiya etiladi."
+            "Har bir xodim mehnat qonunchiligiga muvofiq yiliga 24 ish kuni asosiy ta'tilga "
+            "ega. Ta'til sanalarini kamida 2 hafta oldin bevosita rahbaringiz va HR bo'limi "
+            "bilan kelishib olishingizni tavsiya qilamiz — shunda ish jarayoni uzluksiz davom etadi."
         ),
     },
     "salary": {
         "question": "💰 Ish haqi qachon to'lanadi?",
-        "answer": "Ish haqi har oyning 5- va 20-sanalarida ikki qismga bo'lib to'lanadi (avans va asosiy qism).",
+        "answer": (
+            "Ish haqi har oyning 5- va 20-sanalarida, ikki bosqichda (avans va asosiy qism) "
+            "plastik kartangizga o'tkaziladi. Barcha to'lovlar rasmiy mehnat shartnomasi "
+            "asosida, kechikishsiz amalga oshiriladi."
+        ),
     },
     "schedule": {
         "question": "🕘 Ish jadvali qanday?",
         "answer": (
-            "Standart ish jadvali: Dushanba-Juma, 09:00 - 18:00, tushlik uchun 1 soat tanaffus. "
-            "Call-center operatorlari uchun smena jadvali alohida belgilanadi."
+            "Ofis xodimlari uchun standart jadval — Dushanbadan Jumagacha, 09:00–18:00, "
+            "tushlik uchun 1 soatlik tanaffus bilan. Call-center operatorlari uchun smena "
+            "jadvali individual tarzda, sizning qulayligingizni hisobga olib tuziladi."
         ),
     },
     "remote": {
         "question": "🏠 Masofadan ishlash mumkinmi?",
         "answer": (
-            "IT yo'nalishidagi ba'zi lavozimlar uchun gibrid formatda ishlash imkoniyati mavjud. "
-            "Bo'lim rahbaringiz bilan kelishib olishingiz kerak."
+            "IT yo'nalishidagi bir qator lavozimlar uchun gibrid (qisman masofaviy) ish "
+            "formati mavjud. Bu bo'lim rahbari va vazifalar xususiyatiga qarab belgilanadi — "
+            "suhbat davomida batafsil muhokama qilamiz."
         ),
     },
     "contract": {
         "question": "📄 Mehnat shartnomasi qanday tuziladi?",
         "answer": (
-            "Ish boshlangan kuni HR bo'limi bilan rasmiy mehnat shartnomasi tuziladi, "
-            "sinov muddati 3 oyni tashkil qiladi."
+            "Ishga qabul qilingan kuningizdayoq O'zbekiston mehnat qonunchiligiga muvofiq "
+            "rasmiy mehnat shartnomasi tuziladi. Sinov muddati — 3 oy, bu davrda ham barcha "
+            "ijtimoiy kafolatlar (ta'til, kasallik varaqasi va h.k.) to'liq saqlanadi."
         ),
     },
 }
@@ -161,7 +175,6 @@ class ApplyForm(StatesGroup):
     age = State()
     vacancy = State()
     experience = State()
-    cv = State()
     confirm = State()
     cv_extra = State()
 
@@ -175,8 +188,17 @@ def main_menu():
     if WEBAPP_URL:
         rows.append([KeyboardButton(text="🚀 Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))])
     rows.append([KeyboardButton(text="💼 Bo'sh ish o'rinlari")])
-    rows.append([KeyboardButton(text="🏢 Kompaniya haqida"), KeyboardButton(text="❓ FAQ")])
+    rows.append([KeyboardButton(text="📁 Portfolio"), KeyboardButton(text="❓ FAQ")])
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True)
+
+
+def start_inline_kb():
+    """/start xabari ostida chiqadigan, mini ilovani darhol ochadigan tugma"""
+    if not WEBAPP_URL:
+        return None
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🚀 Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))]
+    ])
 
 
 def phone_request_kb():
@@ -237,22 +259,25 @@ router = Router()
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
-        f"Assalomu alaykum, {esc(message.from_user.full_name)}! 👋\n\n"
-        f"Men <b>{COMPANY_NAME}</b> kompaniyasining HR botiman.\n\n"
-        "💼 Bo'sh ish o'rinlari bilan tanishishingiz\n"
-        "🚀 Mini ilova orqali qulay tarzda ariza topshirishingiz\n"
-        "❓ Ish sharoitlari haqidagi savollaringizga javob olishingiz mumkin.\n\n"
-        "Pastdagi menyudan kerakli bo'limni tanlang 👇",
+        f"Assalomu alaykum, <b>{esc(message.from_user.first_name)}</b>! 👋\n\n"
+        f"<b>{COMPANY_NAME}</b> HR botiga xush kelibsiz — karyerangizni biz bilan "
+        "boshlashingiz mumkin.\n\n"
+        "Bot orqali siz:\n"
+        "🚀 Mini ilova orqali bir necha soniyada ariza topshirasiz\n"
+        "💼 Barcha ochiq lavozimlar bilan tanishasiz\n"
+        "📁 Kompaniyamiz portfoliosini ko'rasiz\n"
+        "❓ Ish sharoitlari bo'yicha javoblar olasiz\n\n"
+        "Boshlash uchun pastdagi tugmalardan birini tanlang 👇",
         reply_markup=main_menu(),
     )
+    kb = start_inline_kb()
+    if kb:
+        await message.answer("Eng tezkor yo'l — mini ilovani shu yerdan oching:", reply_markup=kb)
 
 
-@router.message(F.text == "🏢 Kompaniya haqida")
+@router.message(F.text == "📁 Portfolio")
 async def company_info(message: Message):
-    await message.answer(
-        f"<b>{COMPANY_NAME}</b>\n<i>{COMPANY_TAGLINE}</i>\n\n{COMPANY_DESCRIPTION}",
-        reply_markup=main_menu(),
-    )
+    await message.answer(PORTFOLIO_TEXT, reply_markup=main_menu())
 
 
 @router.message(F.text == "❌ Bekor qilish")
@@ -263,16 +288,24 @@ async def cancel_anywhere(message: Message, state: FSMContext):
 
 # ---- FAQ ----
 
+FAQ_INTRO = (
+    "❓ <b>Ko'p so'raladigan savollar</b>\n\n"
+    "Quyidagi ro'yxatdan sizni qiziqtirgan mavzuni tanlang. Boshqa savolingiz qolsa, "
+    "ariza yuborganingizdan so'ng HR bo'limi siz bilan bevosita bog'lanib, barcha "
+    "tafsilotlarni tushuntirib beradi."
+)
+
+
 @router.message(F.text == "❓ FAQ")
 async def show_faq_menu(message: Message):
-    await message.answer("Quyidagi savollardan birini tanlang:", reply_markup=faq_menu_kb())
+    await message.answer(FAQ_INTRO, reply_markup=faq_menu_kb())
 
 
 @router.callback_query(F.data.startswith("faq_"))
 async def faq_answer(callback: CallbackQuery):
     key = callback.data.replace("faq_", "")
     if key == "back":
-        await callback.message.edit_text("Quyidagi savollardan birini tanlang:", reply_markup=faq_menu_kb())
+        await callback.message.edit_text(FAQ_INTRO, reply_markup=faq_menu_kb())
         await callback.answer()
         return
     item = FAQ_DATA.get(key)
@@ -283,22 +316,23 @@ async def faq_answer(callback: CallbackQuery):
 
 # ---- Vakansiyalar ----
 
+VACANCIES_INTRO = (
+    f"💼 <b>Bo'sh ish o'rinlari</b>\n\n"
+    f"<b>{COMPANY_NAME}</b> jamoasi faol rivojlanmoqda va hoziroq <b>{{n}}</b> ta "
+    "yo'nalishda iqtidorli hamkasblarni kutyapmiz.\n\n"
+    "Har bir lavozim tafsilotlarini ko'rish uchun kerakli kartani tanlang — vazifalar, "
+    "talablar va ariza berish tugmasi shu yerning o'zida 👇"
+).format(n=len(VACANCIES))
+
+
 @router.message(F.text == "💼 Bo'sh ish o'rinlari")
 async def show_vacancies(message: Message):
-    await message.answer(
-        f"Hozirda <b>{len(VACANCIES)}</b> ta yo'nalishda mutaxassis qidiryapmiz.\n"
-        "Batafsil ma'lumot uchun kerakli lavozimni tanlang:",
-        reply_markup=vacancies_list_kb(),
-    )
+    await message.answer(VACANCIES_INTRO, reply_markup=vacancies_list_kb())
 
 
 @router.callback_query(F.data == "vac_back")
 async def back_to_list(callback: CallbackQuery):
-    await callback.message.edit_text(
-        f"Hozirda <b>{len(VACANCIES)}</b> ta yo'nalishda mutaxassis qidiryapmiz.\n"
-        "Batafsil ma'lumot uchun kerakli lavozimni tanlang:",
-        reply_markup=vacancies_list_kb(),
-    )
+    await callback.message.edit_text(VACANCIES_INTRO, reply_markup=vacancies_list_kb())
     await callback.answer()
 
 
@@ -323,8 +357,9 @@ async def start_apply_from_vacancy(callback: CallbackQuery, state: FSMContext):
     await state.update_data(vacancy=vacancy_name, source="manual")
     await state.set_state(ApplyForm.full_name)
     await callback.message.answer(
-        f"<b>{vacancy_name}</b> lavozimiga ariza topshirish jarayonini boshladik.\n\n"
-        "Iltimos, to'liq ism-sharifingizni kiriting (Familiya Ism):",
+        f"📝 <b>{vacancy_name}</b> lavozimiga ariza topshirish jarayonini boshladik.\n"
+        "Bu atigi 1 daqiqa vaqtingizni oladi.\n\n"
+        "1/5. Iltimos, to'liq ism-sharifingizni kiriting (Familiya Ism):",
     )
     await callback.answer()
 
@@ -334,7 +369,8 @@ async def get_full_name(message: Message, state: FSMContext):
     await state.update_data(full_name=message.text)
     await state.set_state(ApplyForm.phone)
     await message.answer(
-        "Rahmat! Endi telefon raqamingizni yuboring (tugmani bosing yoki qo'lda kiriting, masalan: +998901234567):",
+        "2/5. Rahmat! Endi telefon raqamingizni yuboring — tugmani bosing "
+        "yoki qo'lda kiriting (masalan: +998901234567):",
         reply_markup=phone_request_kb(),
     )
 
@@ -353,7 +389,7 @@ async def get_phone_text(message: Message, state: FSMContext):
 
 async def ask_age(message: Message, state: FSMContext):
     await state.set_state(ApplyForm.age)
-    await message.answer("Necha yoshdasiz? (faqat raqam bilan kiriting, masalan: 24)")
+    await message.answer("3/5. Necha yoshdasiz? (faqat raqam bilan kiriting, masalan: 24)")
 
 
 @router.message(ApplyForm.age)
@@ -364,7 +400,7 @@ async def get_age(message: Message, state: FSMContext):
         await ask_experience(message, state)
     else:
         await state.set_state(ApplyForm.vacancy)
-        await message.answer("Qaysi vakansiyaga ariza topshirmoqchisiz?", reply_markup=vacancies_reply_kb())
+        await message.answer("4/5. Qaysi vakansiyaga ariza topshirmoqchisiz?", reply_markup=vacancies_reply_kb())
 
 
 @router.message(ApplyForm.vacancy)
@@ -376,45 +412,41 @@ async def get_vacancy(message: Message, state: FSMContext):
 async def ask_experience(message: Message, state: FSMContext):
     await state.set_state(ApplyForm.experience)
     await message.answer(
-        "Ta'limingiz va ish tajribangiz haqida qisqacha yozing "
-        "(o'quv muassasasi, oldingi ish joylari, ko'nikmalar):",
+        "5/5. Deyarli tugadi! Ta'limingiz va ish tajribangiz haqida qisqacha yozing "
+        "(o'quv muassasasi, oldingi ish joylari, ko'nikmalar).\n\n"
+        "📎 Agar tayyor CV (rezyume) faylingiz bo'lsa, matn o'rniga shu yerga PDF yoki "
+        "Word ko'rinishida yuborishingiz ham mumkin — ikkalasi ham bitta qadam:",
     )
 
 
-@router.message(ApplyForm.experience)
-async def get_experience(message: Message, state: FSMContext):
-    await state.update_data(experience=message.text)
-    await state.set_state(ApplyForm.cv)
-    await message.answer(
-        "So'nggi qadam: CV (rezyume) faylingizni yuboring (PDF/Word) "
-        "yoki o'zingiz haqingizda qo'shimcha matn ko'rinishida yozing:",
+@router.message(ApplyForm.experience, F.document)
+async def get_experience_document(message: Message, state: FSMContext):
+    await state.update_data(
+        cv_type="document",
+        cv_file_id=message.document.file_id,
+        experience=esc(message.caption) if message.caption else "CV fayli orqali yuborildi",
     )
-
-
-@router.message(ApplyForm.cv, F.document)
-async def get_cv_document(message: Message, state: FSMContext):
-    await state.update_data(cv_type="document", cv_file_id=message.document.file_id, cv_text=None)
     await show_summary(message, state)
 
 
-@router.message(ApplyForm.cv, F.text)
-async def get_cv_text(message: Message, state: FSMContext):
-    await state.update_data(cv_type="text", cv_file_id=None, cv_text=message.text)
+@router.message(ApplyForm.experience, F.text)
+async def get_experience_text(message: Message, state: FSMContext):
+    await state.update_data(cv_type="text", cv_file_id=None, experience=message.text)
     await show_summary(message, state)
 
 
 async def show_summary(message: Message, state: FSMContext):
     data = await state.get_data()
-    cv_preview = "📎 Fayl biriktirildi" if data.get("cv_type") == "document" else data.get("cv_text")
     await state.set_state(ApplyForm.confirm)
+    cv_line = "\n📎 CV fayli: biriktirilgan ✅" if data.get("cv_type") == "document" else ""
     await message.answer(
-        "Ma'lumotlaringizni tekshiring:\n\n"
+        "📋 <b>Ma'lumotlaringizni tekshiring</b> — hammasi to'g'rimi?\n\n"
         f"👤 F.I.Sh: {data.get('full_name')}\n"
         f"📱 Telefon: {data.get('phone')}\n"
         f"🎂 Yosh: {data.get('age')}\n"
         f"💼 Vakansiya: {data.get('vacancy')}\n"
-        f"🎓 Ta'lim/tajriba: {data.get('experience')}\n"
-        f"📄 CV: {cv_preview}\n\nHammasi to'g'rimi?",
+        f"🎓 Ta'lim/tajriba: {data.get('experience')}"
+        f"{cv_line}",
         reply_markup=confirm_kb(),
     )
 
@@ -432,8 +464,6 @@ async def confirm_application(message: Message, state: FSMContext, bot: Bot):
         f"🎓 Ta'lim/tajriba: {g('experience')}\n"
         f"🆔 Telegram: @{esc(message.from_user.username or 'yoq')} (ID: {message.from_user.id})\n"
     )
-    if data.get("cv_type") != "document":
-        text += f"\n📄 Qo'shimcha:\n{g('cv_text')}"
     await notify_admins(bot, text[:4000])
     if data.get("cv_type") == "document":
         for admin_id in ADMIN_IDS:
@@ -443,7 +473,9 @@ async def confirm_application(message: Message, state: FSMContext, bot: Bot):
                 pass
     await state.clear()
     await message.answer(
-        "✅ Arizangiz muvaffaqiyatli qabul qilindi! HR bo'limi tez orada siz bilan bog'lanadi.\n\nRahmat! 🙏",
+        "✅ <b>Arizangiz muvaffaqiyatli qabul qilindi!</b>\n\n"
+        "HR bo'limi arizangizni ko'rib chiqib, tez orada siz bilan bog'lanadi. "
+        "E'tiboringiz uchun rahmat! 🙏",
         reply_markup=main_menu(),
     )
 
