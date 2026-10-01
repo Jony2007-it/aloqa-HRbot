@@ -47,11 +47,14 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .ch{display:flex;flex-wrap:wrap;gap:8px}
 .c{height:38px;padding:0 15px;border:1px solid var(--bd);background:none;border-radius:99px;cursor:pointer}
 .c.on{border-color:var(--ac);background:var(--acs);color:var(--ac);font-weight:600}
-.vch{width:100%;text-align:left;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--bd);border-radius:13px;background:none;cursor:pointer;margin-bottom:9px}
+.vch{width:100%;text-align:left;display:block;padding:12px 14px;border:1px solid var(--bd);border-radius:13px;background:none;cursor:pointer;margin-bottom:9px}
 .vch.on{border-color:var(--cc);background:var(--cb)}
 .vch b{font-size:14.5px;display:block}.vch span{font-size:12px;color:var(--mu)}
+.vrow{display:flex;align-items:center;gap:12px}
 .vch u{margin-left:auto;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--bd);flex:none;position:relative}
 .vch.on u{border-color:var(--cc)}.vch.on u::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--cc)}
+.poster{height:62px;border-radius:11px;margin-bottom:10px;display:flex;align-items:center;justify-content:center}
+.poster svg{width:28px;height:28px;stroke:#fff}
 .btn{width:100%;height:50px;border:0;border-radius:13px;background:var(--ac);color:#fff;font-weight:600;font-size:15.5px;cursor:pointer}
 .btn.g{background:none;border:1px solid var(--bd);color:var(--tx)}.btn:disabled{opacity:.5}
 .ft{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--bd);padding:12px 18px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px}
@@ -99,7 +102,14 @@ const CAT=[
 {c:"#15803D",d:"#4ADE80",i:'<path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/>'}];
 const cc=j=>document.documentElement.dataset.th=="dark"?CAT[j].d:CAT[j].c;
 const hx=(h,a)=>{const n=parseInt(h.slice(1),16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
+const dk=(h,f)=>{const n=parseInt(h.slice(1),16);return`rgb(${Math.round((n>>16&255)*f)},${Math.round((n>>8&255)*f)},${Math.round((n&255)*f)})`};
 const vi=(j,sz="")=>`<div class="vi ${sz}" style="--cb:${hx(cc(j),.13)};--cc:${cc(j)}"><svg viewBox="0 0 24 24">${CAT[j].i}</svg></div>`;
+const poster=j=>`<div class="poster" style="background:linear-gradient(135deg,${cc(j)},${dk(cc(j),.55)})"><svg viewBox="0 0 24 24">${CAT[j].i}</svg></div>`;
+// Kompaniya tomonidan taklif etilayotgan maosh oralig'i (so'mda). Kerak bo'lsa shu raqamlarni o'zgartiring.
+const OFFER=[[4500000,7000000],[4000000,5000000],[5000000,7000000],[4000000,null],[5500000,7000000]];
+const nf=n=>n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,"\u2009");
+const UNIT={uz:"so'm",ru:"сум",en:"UZS"};
+const offerTxt=j=>{const[a,b]=OFFER[j],u=UNIT[S.lang];return b?`${nf(a)} – ${nf(b)} ${u}`:`${nf(a)}+ ${u}`};
 const salIc='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.5c.4.9 1.3 1.5 2.5 1.5 1.7 0 3-1 3-2.3 0-3.2-5.5-1.7-5.5-4.7 0-1.3 1.3-2.3 3-2.3 1.2 0 2.1.6 2.5 1.5M12 6.5v11"/></svg>';
 const VC=[
 [["HR menejeri","Xodimlarni topish, suhbat o'tkazish va jamoani rivojlantirish bilan shug'ullanasiz.",["HR sohasida kamida 1 yillik tajriba","Muloqotchan va tashkilotchi","Excel/Google Sheets bilan ishlay olish"]],["HR-менеджер","Подбор сотрудников, собеседования и развитие команды.",["Опыт в HR от 1 года","Коммуникабельность и организованность","Умение работать с Excel/Google Sheets"]],["HR Manager","Recruiting, interviews and team development.",["1+ year of HR experience","Communicative and organized","Comfortable with Excel/Google Sheets"]]],
@@ -147,6 +157,8 @@ const L=()=>T[S.lang],I=()=>LI[S.lang],$=s=>document.querySelector(s),esc=s=>Str
 function theme(){const d=S.th=="auto"?(tg&&tg.colorScheme)||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"):S.th;document.documentElement.dataset.th=d;try{tg.setHeaderColor(d=="dark"?"#0e0f12":"#ffffff");tg.setBackgroundColor(d=="dark"?"#0e0f12":"#ffffff")}catch(e){}return d}
 const age=s=>{const[d,m,y]=s.split(".").map(Number),n=new Date();let a=n.getFullYear()-y;if(n.getMonth()+1<m||(n.getMonth()+1==m&&n.getDate()<d))a--;return a};
 const vd=s=>{const m=/^(\d\d)\.(\d\d)\.(\d{4})$/.exec(s||"");if(!m)return 0;const d=new Date(+m[3],+m[2]-1,+m[1]);if(d.getDate()!=+m[1]||d.getMonth()!=+m[2]-1)return 0;const a=age(s);return a>=16&&a<=80};
+const isoDate=yrsAgo=>{const d=new Date();d.setFullYear(d.getFullYear()-yrsAgo);return d.toISOString().slice(0,10)};
+const dpMin=()=>isoDate(80),dpMax=()=>isoDate(16);
 const fp=d=>{const m=String(d||"").match(/^(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})/);return m.slice(1).filter(Boolean).join(" ")};
 const fld=(k,lb,x)=>`<div class="${S.err[k]?"bad":""}">${lb?`<label>${lb}</label>`:""}${x}${S.err[k]?`<div class="er">${S.err[k]}</div>`:""}</div>`;
 const inp=(k,lb,ty,ex="")=>fld(k,lb,`<input data-k="${k}" type="${ty}" value="${esc(S.D[k])}" ${ex}>`);
@@ -160,9 +172,9 @@ function head(t){const d=document.documentElement.dataset.th;return`<header><h1>
 function wizard(){const l=L(),D=S.D,s=S.step;let h="";
  if(s==0)h=`<div class="row">${inp("fn",l.fn,"text",'autocomplete="given-name"')}${inp("ln",l.ln,"text",'autocomplete="family-name"')}</div>`;
  if(s==1)h=fld("ph",l.ph,`<div class="pf"><span>+998</span><input data-ph inputmode="numeric" placeholder="90 123 45 67" maxlength="12" value="${fp(D.ph)}"></div>`)+inp("em",l.em,"email",'autocapitalize="none" placeholder="name@mail.com"');
- if(s==2)h=fld("bd",l.bd,`<div class="pf"><input data-bd inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" value="${esc(D.bd)}" style="padding-left:14px"><button class="ib" data-a="dp" style="border:0">${IC.ca}</button></div><input class="dp" type="date" id="dp">`);
+ if(s==2)h=fld("bd",l.bd,`<div class="pf"><input data-bd inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" value="${esc(D.bd)}" style="padding-left:14px"><button class="ib" data-a="dp" style="border:0">${IC.ca}</button></div><input class="dp" type="date" id="dp" min="${dpMin()}" max="${dpMax()}">`);
  if(s==3)h=sel("lr",l.lr,RG.map(r=>r[I()]))+inp("ds",l.ds,"text");
- if(s==4)h=fld("vac","",VC.map((v,i)=>{const x=v[I()],exp=S.vopen===i;return`<div class="vch ${D.vac===i?"on":""}" style="--cc:${cc(i)};--cb:${hx(cc(i),.1)}"><div style="display:flex;align-items:center;gap:12px;cursor:pointer" data-c="vac:${i}">${vi(i)}<span style="flex:1;min-width:0"><b>${x[0]}</b><br><span class="mu sm">${x[1]}</span><span class="sal">${salIc}${l.neg}</span></span><u></u></div><button type="button" class="mu sm" data-vo="${i}" style="background:none;border:0;padding:9px 0 0;text-decoration:underline;cursor:pointer">${l.rm} ${exp?"▲":"▼"}</button>${exp?`<ul style="margin:6px 0 0 18px;color:var(--mu);font-size:12.5px">${x[2].map(r=>`<li>${r}</li>`).join("")}</ul>`:""}</div>`}).join(""));
+ if(s==4)h=fld("vac","",VC.map((v,i)=>{const x=v[I()],exp=S.vopen===i;return`<div class="vch ${D.vac===i?"on":""}" style="--cc:${cc(i)};--cb:${hx(cc(i),.1)}">${poster(i)}<div class="vrow" data-c="vac:${i}"><span style="flex:1;min-width:0"><b>${x[0]}</b><br><span class="mu sm">${x[1]}</span><br><span class="sal">${salIc}${offerTxt(i)}</span></span><u></u></div><button type="button" class="mu sm" data-vo="${i}" style="background:none;border:0;padding:9px 0 0;text-decoration:underline;cursor:pointer">${l.rm} ${exp?"▲":"▼"}</button>${exp?`<ul style="margin:6px 0 0 18px;color:var(--mu);font-size:12.5px">${x[2].map(r=>`<li>${r}</li>`).join("")}</ul>`:""}</div>`}).join(""));
  if(s==5)h=fld("ex","",chips("ex",EL[I()].concat(l.ot)))+(D.ex===7?`<div style="margin-top:10px"><input data-k="xt" placeholder="${l.exp}" value="${esc(D.xt)}"></div>`:"");
  if(s==6)h=fld("sal","",chips("sal",SL[I()].concat(l.ot)))+(D.sal===4?`<div style="margin-top:10px"><input data-k="salt" inputmode="numeric" placeholder="${l.salc}" value="${esc(D.salt)}"></div>`:"");
  if(s==7){const x=VC[D.vac][I()],rows=[[l.rv1,`${esc(D.fn)} ${esc(D.ln)}`],[l.rv2,"+998 "+fp(D.ph)],[l.rv3,esc(D.em)||"—"],[l.rv4,esc(D.bd)],[l.rv5,`${RG[D.lr][I()]}, ${esc(D.ds)}`],[l.rv6,x[0]],[l.rv7,D.ex===7?esc(D.xt):EL[I()][D.ex]],[l.rv8,D.sal===4?esc(D.salt)+" so'm":SL[I()][D.sal]]];
@@ -184,7 +196,10 @@ function ok(){const D=S.D,l=L(),e={},req=[["fn","ln"],["ph"],["bd"],["lr","ds"],
 
 function payload(){const D=S.D,x=VC[D.vac];return{lang:S.lang,vacancy:x[0][0],first_name:D.fn,last_name:D.ln,full_name:D.fn+" "+D.ln,birth_date:D.bd,age:age(D.bd),phone:"+998"+D.ph,email:D.em||"",live_region:RG[D.lr][0],district:D.ds,education:"",experience:D.ex===7?D.xt:EL[0][D.ex],expected_salary:D.sal===4?D.salt+" so'm":SL[0][D.sal],about:""}}
 
-async function send(){S.st=1;render();try{if(!(tg&&tg.initData))throw 0;const r=await fetch("/api/apply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:tg.initData,payload:payload()})});if(!(await r.json()).ok)throw 0;S.st=2}catch(e){if(tg&&tg.initData&&!tg.initDataUnsafe.query_id){tg.sendData(JSON.stringify(payload()));return}S.st=3}render()}
+function send(){
+ if(tg&&tg.sendData){try{tg.sendData(JSON.stringify(payload()))}catch(e){S.st=3;render();return}S.st=2}
+ else S.st=2;
+ render()}
 
 document.addEventListener("click",e=>{const b=e.target.closest("button,[data-c],[data-vo]");if(!b)return;const d=b.dataset;
  if(d.a=="lm"){S.lm=!S.lm}else if(d.a=="tg"){S.th=document.documentElement.dataset.th=="dark"?"light":"dark";ls.s("th",S.th)}
@@ -193,7 +208,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button,[data-c],
  else if(d.a=="fin"){if(tg&&tg.close)tg.close();S.D={};S.err={};S.vopen=-1;S.step=0;S.st=0}
  else if(d.a=="nx"){if(!ok()){render();return}if(S.step<7){S.step++;S.err={}}else{send();return}}
  else if(d.a=="bk"){S.step--;S.err={}}
- else if(d.a=="dp"){const p=$("#dp");try{p.showPicker()}catch(x){p.click()};return}
+ else if(d.a=="dp"){const p=$("#dp");p.value=D.bd&&vd(D.bd)?D.bd.split(".").reverse().join("-"):dpMax();try{p.showPicker()}catch(x){p.click()};return}
  else if(d.c){const[k,v]=d.c.split(":");S.D[k]=+v;delete S.err[k]}else return;render()});
 document.addEventListener("input",e=>{const t=e.target,d=t.dataset;if(d.bd!==undefined){const g=t.value.replace(/\D/g,"").slice(0,8);t.value=g.replace(/^(\d{2})(\d)/,"$1.$2").replace(/^(\d{2})\.(\d{2})(\d)/,"$1.$2.$3");S.D.bd=t.value}
  else if(d.ph!==undefined){S.D.ph=t.value.replace(/\D/g,"").slice(0,9);t.value=fp(S.D.ph)}else if(d.k)S.D[d.k]=t.value;else if(d.cb!==undefined){S.D.cn=t.checked}
