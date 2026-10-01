@@ -543,17 +543,13 @@ def build_admin_text(p: dict, user: dict) -> str:
     return (
         "🆕 <b>Yangi ariza (Mini App)</b>\n\n"
         f"💼 Vakansiya: <b>{g('vacancy')}</b>\n"
-        f"💰 Maosh: {g('salary') or 'Kelishuv asosida'}\n"
         f"👤 F.I.Sh: {g('full_name')}\n"
         f"🎂 Tug'ilgan sana: {g('birth_date')} ({g('age')} yosh)\n"
         f"📱 Telefon: {g('phone')}\n"
-        f"✉️ Email: {g('email')}\n"
+        f"✉️ Email: {g('email') or '—'}\n"
         f"📍 Yashash joyi: {g('live_region')}, {g('district')}\n"
-        f"🏢 Ish joyi: {g('work_region')} — {g('branch')}\n"
-        f"🎓 Ta'lim: {g('education')}\n"
         f"🛠 Tajriba: {g('experience')}\n"
-        f"📝 Qo'shimcha: {g('about') or '—'}\n"
-        f"💬 Izoh: {g('note') or '—'}\n"
+        f"💰 Kutilayotgan maosh: {g('expected_salary')}\n"
         f"🆔 Telegram: {'@' + esc(uname) if uname else 'yoq'} (ID: {user.get('id')})"
     )[:4000]
 
