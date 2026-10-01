@@ -13,14 +13,19 @@ button,input,select,textarea{font:inherit;color:inherit}
 svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .lg{position:relative;aspect-ratio:1.486}.lg img{position:absolute;inset:0;width:100%;height:100%}
 [data-th=dark] .k{filter:invert(1)}
-#sp{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .35s}
+#sp{position:fixed;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .35s;overflow:hidden}
 #sp.out{opacity:0;pointer-events:none}
+#sp .hero{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,var(--ac) 0%,transparent 72%);opacity:.16;filter:blur(6px);animation:hz 2.4s ease-out both}
+[data-th=dark] #sp .hero{opacity:.28}
+@keyframes hz{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:.16}}
 #sp .k{animation:fl .8s cubic-bezier(.2,.8,.2,1) both}#sp .b{animation:fr .8s cubic-bezier(.2,.8,.2,1) both}
 #sp i{display:block;height:2px;width:0;background:var(--ac);border-radius:2px;animation:ld 1.5s .2s ease-out both}
 @keyframes fl{from{opacity:0;transform:translateX(-28px)}}@keyframes fr{from{opacity:0;transform:translateX(28px)}}@keyframes ld{to{width:110px}}
-@media(prefers-reduced-motion:reduce){#sp *{animation:none!important}}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
 header{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--bd)}
-header h1{font-size:19px;margin:0;font-weight:650;letter-spacing:-.01em}
+header h1{font-size:18px;margin:0;font-weight:650;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
 .hr{display:flex;gap:8px;position:relative}
 .ib{height:36px;min-width:36px;padding:0 10px;border:1px solid var(--bd);background:none;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer}
 .ib svg{width:18px;height:18px}
@@ -28,105 +33,172 @@ header h1{font-size:19px;margin:0;font-weight:650;letter-spacing:-.01em}
 .menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
 .menu .on,.menu button:active{background:var(--acs);color:var(--ac)}
 main{padding:18px 18px 110px;max-width:560px;margin:0 auto}
-h2{font-size:22px;margin:4px 0 4px;letter-spacing:-.02em}
+h2{font-size:21px;margin:4px 0 4px;letter-spacing:-.02em}
 .mu{color:var(--mu)}.sm{font-size:13px}
 label{display:block;font-size:12.5px;color:var(--mu);margin:16px 0 6px}
 input,select,textarea{width:100%;height:48px;padding:0 14px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);outline:0}
 textarea{height:84px;padding:12px 14px;resize:none}
 input:focus,select:focus,textarea:focus{border-color:var(--ac)}
 select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),linear-gradient(135deg,var(--mu) 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 15px) 21px;background-size:5px 5px;background-repeat:no-repeat}
-.er{color:var(--er);font-size:12px;margin-top:5px}.bad input,.bad select,.bad textarea,.bad .pf{border-color:var(--er)}
+.er{color:var(--er);font-size:12px;margin-top:5px}.bad input,.bad select,.bad textarea{border-color:var(--er)}
 .row{display:flex;gap:10px}.row>div{flex:1;min-width:0}
 .pf{display:flex;align-items:center;border:1px solid var(--bd);border-radius:12px}.pf:focus-within{border-color:var(--ac)}
 .pf span{padding-left:14px;color:var(--mu)}.pf input{border:0;height:46px;padding-left:6px}
 .ch{display:flex;flex-wrap:wrap;gap:8px}
 .c{height:38px;padding:0 15px;border:1px solid var(--bd);background:none;border-radius:99px;cursor:pointer}
 .c.on{border-color:var(--ac);background:var(--acs);color:var(--ac);font-weight:600}
+.vch{width:100%;text-align:left;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--bd);border-radius:13px;background:none;cursor:pointer;margin-bottom:9px}
+.vch.on{border-color:var(--cc);background:var(--cb)}
+.vch b{font-size:14.5px;display:block}.vch span{font-size:12px;color:var(--mu)}
+.vch u{margin-left:auto;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--bd);flex:none;position:relative}
+.vch.on u{border-color:var(--cc)}.vch.on u::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--cc)}
 .btn{width:100%;height:50px;border:0;border-radius:13px;background:var(--ac);color:#fff;font-weight:600;font-size:15.5px;cursor:pointer}
 .btn.g{background:none;border:1px solid var(--bd);color:var(--tx)}.btn:disabled{opacity:.5}
 .ft{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--bd);padding:12px 18px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px}
-.pr{height:3px;background:var(--bd);border-radius:3px;margin:0 0 18px}.pr i{display:block;height:100%;background:var(--ac);border-radius:3px;transition:width .3s}
+.dots{display:flex;gap:5px;margin:2px 0 20px}
+.dots i{flex:1;height:3px;border-radius:3px;background:var(--bd)}.dots i.on{background:var(--ac)}
+.step{animation:rise .38s cubic-bezier(.2,.8,.2,1) both}
 .v{border-bottom:1px solid var(--bd)}
-.v>div{display:flex;justify-content:space-between;gap:12px;padding:16px 0;cursor:pointer}
+.v>div{display:flex;gap:12px;padding:16px 0;cursor:pointer}
+.v .tx{flex:1;min-width:0}
 .v b{font-weight:600;font-size:16px}.v p{margin:3px 0 0;color:var(--mu);font-size:13.5px}
-.v u{width:8px;height:8px;border:solid var(--mu);border-width:0 1.7px 1.7px 0;transform:rotate(45deg);margin:8px 4px 0;flex:none;transition:.2s}
+.v u{width:8px;height:8px;border:solid var(--mu);border-width:0 1.7px 1.7px 0;transform:rotate(45deg);margin:8px 4px 0;flex:none;transition:.2s;align-self:flex-start}
 .v.o u{transform:rotate(-135deg);margin-top:12px}
-.v ul{margin:0 0 14px;padding-left:18px;color:var(--mu);font-size:14px}.v .btn{margin-bottom:16px;height:46px}
-.cd{border:1px solid var(--bd);border-radius:14px;padding:16px;margin-top:12px}.cd b{display:block;margin-bottom:4px}
+.v ul{margin:8px 0 14px;padding-left:18px;color:var(--mu);font-size:14px}.v .btn{margin-bottom:16px;height:46px}
+.vi{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--cb);color:var(--cc)}
+.vi svg{width:22px;height:22px}
+.vi.lg{width:52px;height:52px;border-radius:15px}.vi.lg svg{width:26px;height:26px}
+.sal{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--cc)}
+.sal svg{width:14px;height:14px;stroke-width:2}
+.det-h{display:flex;align-items:center;gap:12px;padding:0 0 2px}
+.det-h .tx b{font-size:17px}
+.cd{border:1px solid var(--bd);border-radius:14px;padding:16px;margin-top:12px;display:flex;gap:13px;align-items:flex-start}
+.cd .tx{flex:1;min-width:0}.cd b{display:block;margin-bottom:4px}
 .kv{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--bd)}.kv span:first-child{color:var(--mu)}
-.seg{display:flex;background:var(--soft);border-radius:11px;padding:3px}.seg button{flex:1;height:34px;border:0;background:none;border-radius:9px;cursor:pointer;font-size:13.5px}.seg .on{background:var(--bg);font-weight:600;box-shadow:0 0 0 1px var(--bd)}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bg);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
 nav button{flex:1;border:0;background:none;padding:9px 0 8px;color:var(--mu);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}nav .on{color:var(--ac)}
-.sh{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:flex;align-items:flex-end}
-.sh>div{background:var(--bg);width:100%;border-radius:20px 20px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
-.ok{width:54px;height:54px;border-radius:50%;border:1.5px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.rv{border-bottom:1px solid var(--bd);padding:12px 0}.rv span{display:block;font-size:12px;color:var(--mu)}.rv b{font-size:14.5px;font-weight:600}
+.ok{width:60px;height:60px;border-radius:50%;border:1.5px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;margin:40px auto 16px;animation:rise .4s both}
 .dp{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.cb{display:flex;gap:10px;margin-top:20px;color:var(--tx);font-size:13.5px}.cb input{width:20px;height:20px;flex:none;margin-top:1px}
 </style></head><body>
-<div id="sp"><div class="lg" style="width:210px"><img class="k" src="logo-ink.png"><img class="b" src="logo-blue.png"></div><i></i></div>
+<div id="sp"><div class="hero"></div><div class="lg" style="width:210px"><img class="k" src="logo-ink.png"><img class="b" src="logo-blue.png"></div><i></i></div>
 <div id="app"></div>
 <script>
 const tg=window.Telegram&&Telegram.WebApp,LI={uz:0,ru:1,en:2};
-// ===== Filiallar: haqiqiy filiallaringizni shu yerga yozing (viloyat raqami: filiallar) =====
-// Masalan: BR[7]=["Namangan shahar filiali","Chust filiali"]  (7 = Namangan). Bo'sh bo'lsa "Markaziy filial" chiqadi.
+// ===== Filiallar (ixtiyoriy, faqat "Kompaniya" bo'limida ko'rsatiladi) =====
 const BR={};
 const RG=[["Toshkent shahri","город Ташкент","Tashkent city"],["Toshkent viloyati","Ташкентская область","Tashkent region"],["Andijon","Андижан","Andijan"],["Buxoro","Бухара","Bukhara"],["Farg'ona","Фергана","Fergana"],["Jizzax","Джизак","Jizzakh"],["Xorazm","Хорезм","Khorezm"],["Namangan","Наманган","Namangan"],["Navoiy","Навои","Navoi"],["Qashqadaryo","Кашкадарья","Kashkadarya"],["Qoraqalpog'iston","Каракалпакстан","Karakalpakstan"],["Samarqand","Самарканд","Samarkand"],["Sirdaryo","Сырдарья","Syrdarya"],["Surxondaryo","Сурхандарья","Surkhandarya"]];
-const ED=[["O'rta","O'rta maxsus","Oliy","Talaba"],["Среднее","Среднее спец.","Высшее","Студент"],["Secondary","Vocational","Higher","Student"]];
 const EL=[["Tajribasiz","1 oy","3 oy","9 oy","1 yil","3 yil","6+ yil"],["Без опыта","1 мес.","3 мес.","9 мес.","1 год","3 года","6+ лет"],["None","1 mo","3 mo","9 mo","1 yr","3 yrs","6+ yrs"]];
+const SL=[["3,5 – 5 mln so'm","5 – 6 mln so'm","6 – 7 mln so'm","7 mln so'mdan yuqori"],["3,5 – 5 млн сум","5 – 6 млн сум","6 – 7 млн сум","более 7 млн сум"],["3.5 – 5 mln UZS","5 – 6 mln UZS","6 – 7 mln UZS","above 7 mln UZS"]];
+const CAT=[
+{c:"#7C5CFC",d:"#A895FF",i:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="7" r="2.3"/><path d="M15.5 13.2c2.6.4 4.5 2.6 4.5 5.3"/>'},
+{c:"#2F6BFF",d:"#7CA0FF",i:'<path d="M4 13v-1a8 8 0 0116 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19v1a3 3 0 01-3 3h-2"/>'},
+{c:"#0D9488",d:"#3DDBCB",i:'<path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/>'},
+{c:"#B45309",d:"#F5A623",i:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="M8 10.5l1.8 1.8 3.2-3.6M20 20l-4.3-4.3"/>'},
+{c:"#15803D",d:"#4ADE80",i:'<path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/>'}];
+const cc=j=>document.documentElement.dataset.th=="dark"?CAT[j].d:CAT[j].c;
+const hx=(h,a)=>{const n=parseInt(h.slice(1),16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
+const vi=(j,sz="")=>`<div class="vi ${sz}" style="--cb:${hx(cc(j),.13)};--cc:${cc(j)}"><svg viewBox="0 0 24 24">${CAT[j].i}</svg></div>`;
+const salIc='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.5c.4.9 1.3 1.5 2.5 1.5 1.7 0 3-1 3-2.3 0-3.2-5.5-1.7-5.5-4.7 0-1.3 1.3-2.3 3-2.3 1.2 0 2.1.6 2.5 1.5M12 6.5v11"/></svg>';
 const VC=[
 [["HR menejeri","Xodimlarni topish, suhbat o'tkazish va jamoani rivojlantirish bilan shug'ullanasiz.",["HR sohasida kamida 1 yillik tajriba","Muloqotchan va tashkilotchi","Excel/Google Sheets bilan ishlay olish"]],["HR-менеджер","Подбор сотрудников, собеседования и развитие команды.",["Опыт в HR от 1 года","Коммуникабельность и организованность","Умение работать с Excel/Google Sheets"]],["HR Manager","Recruiting, interviews and team development.",["1+ year of HR experience","Communicative and organized","Comfortable with Excel/Google Sheets"]]],
 [["Call-center operatori","Mijozlar bilan telefon orqali muloqot qilib, savollariga javob berasiz va buyurtmalarni qayd etasiz.",["Toza va tushunarli nutq","Sabr-toqatli va diqqatli","Kompyuterda ishlay olish"]],["Оператор колл-центра","Общение с клиентами по телефону, ответы на вопросы и фиксация заказов.",["Чистая и понятная речь","Терпение и внимательность","Уверенная работа на компьютере"]],["Call-center operator","Talk to customers by phone, answer questions and record orders.",["Clear speech","Patient and attentive","Comfortable using a computer"]]],
 [["IT dasturchi","Ichki tizimlar, botlar va avtomatlashtirish loyihalarini yaratasiz va qo'llab-quvvatlaysiz.",["Python yoki JavaScript bilishi","Git bilan ishlay olish","Mustaqil o'rganishga qiziqish"]],["IT-разработчик","Создание и поддержка внутренних систем, ботов и проектов автоматизации.",["Знание Python или JavaScript","Умение работать с Git","Желание учиться самостоятельно"]],["IT Developer","Build and maintain internal systems, bots and automation projects.",["Python or JavaScript","Comfortable with Git","Eager to learn on your own"]]],
 [["Sifat nazorati mutaxassisi (QA)","Operatorlarning qo'ng'iroqlarini tinglab, xizmat sifatini baholaysiz.",["Diqqatlilik va tafsilotlarga e'tibor","Konstruktiv fikr bildira olish","Hisobot yuritish ko'nikmasi"]],["Специалист по контролю качества (QA)","Прослушивание звонков операторов и оценка качества обслуживания.",["Внимание к деталям","Конструктивная обратная связь","Навык ведения отчётности"]],["Quality Assurance Specialist","Review operators' calls and assess service quality.",["Attention to detail","Constructive feedback","Reporting skills"]]],
 [["Loyiha menejeri","IT avtomatlashtirish loyihalarini rejalashtirasiz va jamoani muvofiqlashtirasiz.",["Loyihalarni boshqarish tajribasi (afzallik)","Aniq va tizimli fikrlash","Jamoa bilan ishlay olish"]],["Руководитель проектов","Планирование проектов IT-автоматизации и координация команды.",["Опыт управления проектами (плюс)","Системное мышление","Умение работать в команде"]],["Project Manager","Plan IT automation projects and coordinate the team.",["Project management experience (a plus)","Structured thinking","Team player"]]]];
-const T={uz:{v:"Vakansiyalar",c:"Kompaniya",p:"Profil",w:["Shaxsiy ma'lumotlar","Manzil va ish joyi","Tajriba va ta'lim"],hi:"Xush kelibsiz",hs:"Ariza topshirish uchun profilingizni to'ldiring. Bu faqat bir marta so'raladi.",fn:"Ism",ln:"Familiya",bd:"Tug'ilgan sana",ph:"Telefon raqami",em:"Elektron pochta",lr:"Yashash viloyati",ds:"Tuman / shahar",wr:"Ishlamoqchi bo'lgan viloyat",br:"Filial",ed:"Ta'lim darajasi",ex:"Ish tajribasi",ot:"Boshqa",exp:"Tajribangizni yozing",ab:"Ko'nikmalar va qo'shimcha (ixtiyoriy)",cn:"Ma'lumotlarimni arizani ko'rib chiqish uchun qayta ishlashga roziman",pk:"Tanlang",nx:"Keyingi",bk:"Orqaga",dn:"Yakunlash",rq:"To'ldirish shart",bad:"Noto'g'ri format",ap:"Ariza berish",sn:"Yuborish",sd:"Ariza yuborildi",sx:"HR bo'limi tez orada siz bilan bog'lanadi.",er:"Yuborib bo'lmadi. Internetni tekshirib, qayta urinib ko'ring.",cl:"Yopish",ce:"Tahrirlash",lg:"Til",th:"Mavzu",t0:"Tizim",t1:"Oq",t2:"Qora",rs:"Profilni o'chirish",ai:"Aloqabor — outsourcing call-center xizmati va IT avtomatlashtirish kompaniyasi. Mijozlar bilan aloqani va biznes-jarayonlarni texnologiya yordamida soddalashtiramiz.",s1:"Call-center xizmatlari",s1d:"Mijozlar bilan aloqa, buyurtmalarni qabul qilish va qo'llab-quvvatlash xizmati.",s2:"IT avtomatlashtirish",s2d:"Botlar, CRM va ichki tizimlarni ishlab chiqib, jarayonlarni avtomatlashtiramiz.",fl:"Filiallar"},
-ru:{v:"Вакансии",c:"Компания",p:"Профиль",w:["Личные данные","Адрес и место работы","Опыт и образование"],hi:"Добро пожаловать",hs:"Заполните профиль, чтобы подавать заявки. Это нужно сделать один раз.",fn:"Имя",ln:"Фамилия",bd:"Дата рождения",ph:"Номер телефона",em:"Эл. почта",lr:"Область проживания",ds:"Район / город",wr:"Желаемая область работы",br:"Филиал",ed:"Образование",ex:"Опыт работы",ot:"Другое",exp:"Опишите ваш опыт",ab:"Навыки и дополнительно (необязательно)",cn:"Согласен на обработку данных для рассмотрения заявки",pk:"Выберите",nx:"Далее",bk:"Назад",dn:"Завершить",rq:"Обязательное поле",bad:"Неверный формат",ap:"Откликнуться",sn:"Отправить",sd:"Заявка отправлена",sx:"HR-отдел скоро свяжется с вами.",er:"Не удалось отправить. Проверьте интернет и повторите.",cl:"Закрыть",ce:"Изменить",lg:"Язык",th:"Тема",t0:"Авто",t1:"Светлая",t2:"Тёмная",rs:"Удалить профиль",ai:"Aloqabor — компания в сфере аутсорсинга колл-центра и IT-автоматизации. Мы упрощаем общение с клиентами и бизнес-процессы с помощью технологий.",s1:"Услуги колл-центра",s1d:"Общение с клиентами, приём заказов и служба поддержки.",s2:"IT-автоматизация",s2d:"Разрабатываем ботов, CRM и внутренние системы, автоматизируя процессы.",fl:"Филиалы"},
-en:{v:"Jobs",c:"Company",p:"Profile",w:["Personal details","Address & workplace","Experience & education"],hi:"Welcome",hs:"Fill in your profile to apply. You only need to do this once.",fn:"First name",ln:"Last name",bd:"Date of birth",ph:"Phone number",em:"Email",lr:"Region of residence",ds:"District / city",wr:"Preferred work region",br:"Branch",ed:"Education",ex:"Work experience",ot:"Other",exp:"Describe your experience",ab:"Skills and extra info (optional)",cn:"I agree to my data being processed to review my application",pk:"Select",nx:"Next",bk:"Back",dn:"Finish",rq:"Required",bad:"Invalid format",ap:"Apply",sn:"Send",sd:"Application sent",sx:"The HR team will contact you soon.",er:"Could not send. Check your connection and try again.",cl:"Close",ce:"Edit",lg:"Language",th:"Theme",t0:"Auto",t1:"Light",t2:"Dark",rs:"Delete profile",ai:"Aloqabor is a company in outsourced call-center services and IT automation. We simplify customer communication and business processes with technology.",s1:"Call-center services",s1d:"Customer communication, order intake and support.",s2:"IT automation",s2d:"We build bots, CRMs and internal systems to automate processes.",fl:"Branches"}};
+const T={uz:{v:"Vakansiyalar",c:"Kompaniya",rm:"Talablar",ap:"Ariza topshirish",
+w:["Shaxsiy ma'lumotlar","Aloqa ma'lumotlari","Tug'ilgan sana","Yashash manzili","Lavozim","Ish tajribasi","Kutilayotgan maosh","Tekshirib chiqing"],
+fn:"Ism",ln:"Familiya",bd:"Tug'ilgan sana",ph:"Telefon raqami",em:"Elektron pochta (ixtiyoriy)",lr:"Viloyat",ds:"Tuman / shahar",
+ex:"Ish tajribasi",ot:"Boshqa",exp:"Tajribangizni yozing",sal:"Kutilayotgan maosh",salc:"Summani kiriting (so'mda)",
+pk:"Tanlang",nx:"Keyingi",bk:"Orqaga",rq:"To'ldirish shart",bad:"Noto'g'ri format",
+sn:"Ariza yuborish",sd:"Ariza yuborildi",sx:"HR bo'limi tez orada siz bilan bog'lanadi.",er:"Yuborib bo'lmadi. Internetni tekshirib, qayta urinib ko'ring.",cl:"Yopish",
+cn:"Ma'lumotlarimni ariza ko'rib chiqilishi uchun qayta ishlashga roziman",
+rv1:"Ism-familiya",rv2:"Telefon",rv3:"Email",rv4:"Tug'ilgan sana",rv5:"Manzil",rv6:"Lavozim",rv7:"Tajriba",rv8:"Kutilayotgan maosh",
+lg:"Til",th:"Mavzu",t0:"Tizim",t1:"Oq",t2:"Qora",
+ai:"Aloqabor — outsourcing call-center xizmati va IT avtomatlashtirish kompaniyasi. Mijozlar bilan aloqani va biznes-jarayonlarni texnologiya yordamida soddalashtiramiz.",
+s1:"Call-center xizmatlari",s1d:"Mijozlar bilan aloqa, buyurtmalarni qabul qilish va qo'llab-quvvatlash xizmati.",s2:"IT avtomatlashtirish",s2d:"Botlar, CRM va ichki tizimlarni ishlab chiqib, jarayonlarni avtomatlashtiramiz.",fl:"Filiallar",salb:"Maosh",neg:"Kelishuv asosida"},
+ru:{v:"Вакансии",c:"Компания",rm:"Требования",ap:"Откликнуться",
+w:["Личные данные","Контактные данные","Дата рождения","Адрес проживания","Должность","Опыт работы","Ожидаемая зарплата","Проверьте данные"],
+fn:"Имя",ln:"Фамилия",bd:"Дата рождения",ph:"Номер телефона",em:"Эл. почта (необязательно)",lr:"Область",ds:"Район / город",
+ex:"Опыт работы",ot:"Другое",exp:"Опишите ваш опыт",sal:"Ожидаемая зарплата",salc:"Укажите сумму (в сумах)",
+pk:"Выберите",nx:"Далее",bk:"Назад",rq:"Обязательное поле",bad:"Неверный формат",
+sn:"Отправить заявку",sd:"Заявка отправлена",sx:"HR-отдел скоро свяжется с вами.",er:"Не удалось отправить. Проверьте интернет и повторите.",cl:"Закрыть",
+cn:"Согласен на обработку данных для рассмотрения заявки",
+rv1:"Имя и фамилия",rv2:"Телефон",rv3:"Email",rv4:"Дата рождения",rv5:"Адрес",rv6:"Должность",rv7:"Опыт",rv8:"Ожидаемая зарплата",
+lg:"Язык",th:"Тема",t0:"Авто",t1:"Светлая",t2:"Тёмная",
+ai:"Aloqabor — компания в сфере аутсорсинга колл-центра и IT-автоматизации. Мы упрощаем общение с клиентами и бизнес-процессы с помощью технологий.",
+s1:"Услуги колл-центра",s1d:"Общение с клиентами, приём заказов и служба поддержки.",s2:"IT-автоматизация",s2d:"Разрабатываем ботов, CRM и внутренние системы, автоматизируя процессы.",fl:"Филиалы",salb:"Зарплата",neg:"По договорённости"},
+en:{v:"Jobs",c:"Company",rm:"Requirements",ap:"Apply",
+w:["Personal details","Contact details","Date of birth","Home address","Position","Work experience","Expected salary","Review"],
+fn:"First name",ln:"Last name",bd:"Date of birth",ph:"Phone number",em:"Email (optional)",lr:"Region",ds:"District / city",
+ex:"Work experience",ot:"Other",exp:"Describe your experience",sal:"Expected salary",salc:"Enter amount (UZS)",
+pk:"Select",nx:"Next",bk:"Back",rq:"Required",bad:"Invalid format",
+sn:"Submit application",sd:"Application sent",sx:"The HR team will contact you soon.",er:"Could not send. Check your connection and try again.",cl:"Close",
+cn:"I agree to my data being processed to review my application",
+rv1:"Full name",rv2:"Phone",rv3:"Email",rv4:"Date of birth",rv5:"Address",rv6:"Position",rv7:"Experience",rv8:"Expected salary",
+lg:"Language",th:"Theme",t0:"Auto",t1:"Light",t2:"Dark",
+ai:"Aloqabor is a company in outsourced call-center services and IT automation. We simplify customer communication and business processes with technology.",
+s1:"Call-center services",s1d:"Customer communication, order intake and support.",s2:"IT automation",s2d:"We build bots, CRMs and internal systems to automate processes.",fl:"Branches",salb:"Salary",neg:"Negotiable"}};
 const ls={g:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const tl=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.language_code;
-const S={lang:ls.g("lang")||(tl in LI?tl:"uz"),th:ls.g("th")||"auto",P:ls.g("P"),D:{},err:{},step:0,tab:"v",open:-1,sh:-1,st:0,lm:0};
-S.wiz=!S.P;
+const S={lang:ls.g("lang")||(tl in LI?tl:"uz"),th:ls.g("th")||"auto",D:{},err:{},step:0,vopen:-1,st:0,lm:0};
 const L=()=>T[S.lang],I=()=>LI[S.lang],$=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function theme(){const d=S.th=="auto"?(tg&&tg.colorScheme)||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"):S.th;document.documentElement.dataset.th=d;try{tg.setHeaderColor(d=="dark"?"#0e0f12":"#ffffff");tg.setBackgroundColor(d=="dark"?"#0e0f12":"#ffffff")}catch(e){}return d}
 const age=s=>{const[d,m,y]=s.split(".").map(Number),n=new Date();let a=n.getFullYear()-y;if(n.getMonth()+1<m||(n.getMonth()+1==m&&n.getDate()<d))a--;return a};
 const vd=s=>{const m=/^(\d\d)\.(\d\d)\.(\d{4})$/.exec(s||"");if(!m)return 0;const d=new Date(+m[3],+m[2]-1,+m[1]);if(d.getDate()!=+m[1]||d.getMonth()!=+m[2]-1)return 0;const a=age(s);return a>=16&&a<=80};
 const fp=d=>{const m=String(d||"").match(/^(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})/);return m.slice(1).filter(Boolean).join(" ")};
-const brs=r=>BR[r]&&BR[r].length?BR[r]:[{uz:"Markaziy filial",ru:"Центральный филиал",en:"Main branch"}[S.lang]];
 const fld=(k,lb,x)=>`<div class="${S.err[k]?"bad":""}">${lb?`<label>${lb}</label>`:""}${x}${S.err[k]?`<div class="er">${S.err[k]}</div>`:""}</div>`;
 const inp=(k,lb,ty,ex="")=>fld(k,lb,`<input data-k="${k}" type="${ty}" value="${esc(S.D[k])}" ${ex}>`);
 const sel=(k,lb,o)=>fld(k,lb,`<select data-s="${k}"><option value="">${L().pk}</option>${o.map((x,j)=>`<option value="${j}" ${S.D[k]===String(j)?"selected":""}>${esc(x)}</option>`).join("")}</select>`);
 const chips=(k,o)=>`<div class="ch">${o.map((x,j)=>`<button class="c ${S.D[k]===j?"on":""}" data-c="${k}:${j}">${esc(x)}</button>`).join("")}</div>`;
-const IC={v:'<svg viewBox="0 0 24 24"><path d="M3 8h18v11H3zM9 8V5h6v3"/></svg>',c:'<svg viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h2M8 12h2M8 16h2"/></svg>',p:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',m:'<svg viewBox="0 0 24 24"><path d="M20 14A8 8 0 0110 4a8 8 0 1010 10z"/></svg>',s:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>',ca:'<svg viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>',ck:'<svg viewBox="0 0 24 24" style="width:26px;height:26px"><path d="M5 12l5 5L20 7"/></svg>'};
+const IC={v:'<svg viewBox="0 0 24 24"><path d="M3 8h18v11H3zM9 8V5h6v3"/></svg>',c:'<svg viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h2M8 12h2M8 16h2"/></svg>',m:'<svg viewBox="0 0 24 24"><path d="M20 14A8 8 0 0110 4a8 8 0 1010 10z"/></svg>',s:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>',ca:'<svg viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>',x:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',ck:'<svg viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M5 12l5 5L20 7"/></svg>'};
 const logo=w=>`<div class="lg" style="width:${w}px"><img class="k" src="logo-ink.png"><img class="b" src="logo-blue.png"></div>`;
-function head(t){const d=document.documentElement.dataset.th;return`<header><h1>${t}</h1><div class="hr"><button class="ib" data-a="lm">${S.lang.toUpperCase()}</button><button class="ib" data-a="tg">${d=="dark"?IC.s:IC.m}</button>${S.lm?`<div class="menu">${["uz:O'zbekcha","ru:Русский","en:English"].map(x=>{const[a,b]=x.split(":");return`<button class="${a==S.lang?"on":""}" data-l="${a}">${b}</button>`}).join("")}</div>`:""}</div></header>`}
+
+function head(t){const d=document.documentElement.dataset.th;return`<header><h1>${esc(t)}</h1><div class="hr"><button class="ib" data-a="lm">${S.lang.toUpperCase()}</button><button class="ib" data-a="tg">${d=="dark"?IC.s:IC.m}</button>${S.lm?`<div class="menu">${["uz:O'zbekcha","ru:Русский","en:English"].map(x=>{const[a,b]=x.split(":");return`<button class="${a==S.lang?"on":""}" data-l="${a}">${b}</button>`}).join("")}</div>`:""}</div></header>`}
+
 function wizard(){const l=L(),D=S.D,s=S.step;let h="";
- if(s==0)h=`<div style="margin:6px 0 16px">${logo(96)}</div><h2>${l.hi}</h2><p class="mu sm" style="margin:0 0 4px">${l.hs}</p><div class="row">${inp("fn",l.fn,"text",'autocomplete="given-name"')}${inp("ln",l.ln,"text",'autocomplete="family-name"')}</div>`+fld("bd",l.bd,`<div class="pf"><input data-bd inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" value="${esc(D.bd)}" style="padding-left:14px"><button class="ib" data-a="dp" style="border:0">${IC.ca}</button></div><input class="dp" type="date" id="dp">`)+fld("ph",l.ph,`<div class="pf"><span>+998</span><input data-ph inputmode="numeric" placeholder="90 123 45 67" maxlength="12" value="${fp(D.ph)}"></div>`)+inp("em",l.em,"email",'autocapitalize="none" placeholder="name@mail.com"');
- if(s==1)h=sel("lr",l.lr,RG.map(r=>r[I()]))+inp("ds",l.ds,"text")+sel("wr",l.wr,RG.map(r=>r[I()]))+(D.wr?sel("br",l.br,brs(+D.wr)):"");
- if(s==2)h=`<label>${l.ed}</label>${fld("ed","",chips("ed",ED[I()]))}<label>${l.ex}</label>${fld("ex","",chips("ex",EL[I()].concat(l.ot)))}${D.ex===7?`<div style="margin-top:10px"><input data-k="xt" placeholder="${l.exp}" value="${esc(D.xt)}"></div>`:""}<label>${l.ab}</label><textarea data-k="ab">${esc(D.ab)}</textarea>`+fld("cn","",`<label style="display:flex;gap:10px;margin-top:18px;color:var(--tx);font-size:13.5px"><input type="checkbox" data-cb style="width:20px;height:20px;flex:none" ${D.cn?"checked":""}>${l.cn}</label>`);
- return head(l.w[s])+`<main><div class="pr"><i style="width:${(s+1)*33.4}%"></i></div>${h}</main><div class="ft">${s?`<button class="btn g" data-a="bk" style="flex:.6">${l.bk}</button>`:""}<button class="btn" data-a="nx">${s==2?l.dn:l.nx}</button></div>`}
-function shell(){const l=L(),t=S.tab;let h="";
- if(t=="v")h=VC.map((v,j)=>{const x=v[I()];return`<div class="v ${S.open==j?"o":""}"><div data-o="${j}"><span><b>${x[0]}</b><p>${x[1]}</p></span><u></u></div>${S.open==j?`<ul>${x[2].map(r=>`<li>${r}</li>`).join("")}</ul><button class="btn" data-ap="${j}">${l.ap}</button>`:""}</div>`}).join("");
- if(t=="c"){const fb=Object.keys(BR).filter(k=>BR[k].length);h=`<div style="margin:6px 0 14px">${logo(110)}</div><p style="margin:0">${l.ai}</p><div class="cd"><b>${l.s1}</b><span class="mu sm">${l.s1d}</span></div><div class="cd"><b>${l.s2}</b><span class="mu sm">${l.s2d}</span></div>`+(fb.length?`<h2 style="margin-top:22px;font-size:18px">${l.fl}</h2>`+fb.map(k=>`<div class="kv"><span>${RG[k][I()]}</span><span>${BR[k].join(", ")}</span></div>`).join(""):"")}
- if(t=="p"){const P=S.P;h=`<h2>${esc(P.fn)} ${esc(P.ln)}</h2><p class="mu sm" style="margin:0 0 8px">+998 ${fp(P.ph)} · ${esc(P.em)}</p><div class="kv"><span>${l.wr}</span><span>${RG[P.wr][I()]}</span></div><div class="kv"><span>${l.br}</span><span>${esc(brs(+P.wr)[P.br]||"")}</span></div><button class="btn g" data-a="ed" style="margin:16px 0 8px">${l.ce}</button><label>${l.lg}</label><div class="seg">${["uz","ru","en"].map(x=>`<button class="${x==S.lang?"on":""}" data-l="${x}">${x.toUpperCase()}</button>`).join("")}</div><label>${l.th}</label><div class="seg">${["auto","light","dark"].map((x,j)=>`<button class="${x==S.th?"on":""}" data-t="${x}">${l["t"+j]}</button>`).join("")}</div><button class="btn g" data-a="rs" style="margin-top:26px;color:var(--er)">${l.rs}</button>`}
- let sh="";if(S.sh>=0){const x=VC[S.sh][I()];sh=`<div class="sh"><div>${S.st==2?`<div class="ok">${IC.ck}</div><h2 style="text-align:center">${l.sd}</h2><p class="mu" style="text-align:center">${l.sx}</p><button class="btn" data-a="cl">${l.cl}</button>`:`<h2 style="font-size:19px">${x[0]}</h2><p class="mu sm">${esc(S.P.fn)} ${esc(S.P.ln)} · +998 ${fp(S.P.ph)}</p>${S.st==3?`<div class="er" style="margin:0 0 10px">${l.er}</div>`:""}<button class="btn" data-a="sn" ${S.st==1?"disabled":""}>${l.sn}</button><button class="btn g" data-a="cl" style="margin-top:8px">${l.cl}</button>`}</div></div>`}
- return head(l[t])+`<main>${h}</main><nav>${["v","c","p"].map(k=>`<button class="${k==t?"on":""}" data-tab="${k}">${IC[k]}${l[k]}</button>`).join("")}</nav>${sh}`}
-function render(){theme();$("#app").innerHTML=S.wiz?wizard():shell()}
-function ok(){const D=S.D,l=L(),e={},n=[["fn","ln","bd","ph","em"],["lr","ds","wr","br"],["ed","ex","cn"]][S.step];n.forEach(k=>{if(!D[k]&&D[k]!==0)e[k]=l.rq});
- if(S.step==0){if(D.bd&&!vd(D.bd))e.bd=l.bad;if(D.em&&!/^\S+@\S+\.\S+$/.test(D.em))e.em=l.bad;if(D.ph&&D.ph.length<9)e.ph=l.bad}
- if(S.step==2&&D.ex===7&&!D.xt)e.ex=l.rq;S.err=e;return!Object.keys(e).length}
-function payload(j){const P=S.P;return{lang:S.lang,vacancy:VC[j][0][0],first_name:P.fn,last_name:P.ln,full_name:P.fn+" "+P.ln,birth_date:P.bd,age:age(P.bd),phone:"+998"+P.ph,email:P.em,live_region:RG[P.lr][0],district:P.ds,work_region:RG[P.wr][0],branch:BR[P.wr]&&BR[P.wr][P.br]||"Markaziy filial",education:ED[0][P.ed],experience:P.ex===7?P.xt:EL[0][P.ex],about:P.ab||""}}
-async function send(){const p=payload(S.sh);S.st=1;render();try{if(!(tg&&tg.initData))throw 0;const r=await fetch("/api/apply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:tg.initData,payload:p})});if(!(await r.json()).ok)throw 0;S.st=2}catch(e){if(tg&&tg.initData&&!tg.initDataUnsafe.query_id){tg.sendData(JSON.stringify(p));return}S.st=3}render()}
-document.addEventListener("click",e=>{const b=e.target.closest("button,[data-o]");if(!b)return;const d=b.dataset;
+ if(s==0)h=`<div class="row">${inp("fn",l.fn,"text",'autocomplete="given-name"')}${inp("ln",l.ln,"text",'autocomplete="family-name"')}</div>`;
+ if(s==1)h=fld("ph",l.ph,`<div class="pf"><span>+998</span><input data-ph inputmode="numeric" placeholder="90 123 45 67" maxlength="12" value="${fp(D.ph)}"></div>`)+inp("em",l.em,"email",'autocapitalize="none" placeholder="name@mail.com"');
+ if(s==2)h=fld("bd",l.bd,`<div class="pf"><input data-bd inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" value="${esc(D.bd)}" style="padding-left:14px"><button class="ib" data-a="dp" style="border:0">${IC.ca}</button></div><input class="dp" type="date" id="dp">`);
+ if(s==3)h=sel("lr",l.lr,RG.map(r=>r[I()]))+inp("ds",l.ds,"text");
+ if(s==4)h=fld("vac","",VC.map((v,i)=>{const x=v[I()],exp=S.vopen===i;return`<div class="vch ${D.vac===i?"on":""}" style="--cc:${cc(i)};--cb:${hx(cc(i),.1)}"><div style="display:flex;align-items:center;gap:12px;cursor:pointer" data-c="vac:${i}">${vi(i)}<span style="flex:1;min-width:0"><b>${x[0]}</b><br><span class="mu sm">${x[1]}</span><span class="sal">${salIc}${l.neg}</span></span><u></u></div><button type="button" class="mu sm" data-vo="${i}" style="background:none;border:0;padding:9px 0 0;text-decoration:underline;cursor:pointer">${l.rm} ${exp?"▲":"▼"}</button>${exp?`<ul style="margin:6px 0 0 18px;color:var(--mu);font-size:12.5px">${x[2].map(r=>`<li>${r}</li>`).join("")}</ul>`:""}</div>`}).join(""));
+ if(s==5)h=fld("ex","",chips("ex",EL[I()].concat(l.ot)))+(D.ex===7?`<div style="margin-top:10px"><input data-k="xt" placeholder="${l.exp}" value="${esc(D.xt)}"></div>`:"");
+ if(s==6)h=fld("sal","",chips("sal",SL[I()].concat(l.ot)))+(D.sal===4?`<div style="margin-top:10px"><input data-k="salt" inputmode="numeric" placeholder="${l.salc}" value="${esc(D.salt)}"></div>`:"");
+ if(s==7){const x=VC[D.vac][I()],rows=[[l.rv1,`${esc(D.fn)} ${esc(D.ln)}`],[l.rv2,"+998 "+fp(D.ph)],[l.rv3,esc(D.em)||"—"],[l.rv4,esc(D.bd)],[l.rv5,`${RG[D.lr][I()]}, ${esc(D.ds)}`],[l.rv6,x[0]],[l.rv7,D.ex===7?esc(D.xt):EL[I()][D.ex]],[l.rv8,D.sal===4?esc(D.salt)+" so'm":SL[I()][D.sal]]];
+  h=`<div class="det-h">${vi(D.vac,"lg")}<span class="tx"><b>${x[0]}</b></span></div>`+rows.map(r=>`<div class="rv"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")+fld("cn","",`<label class="cb"><input type="checkbox" data-cb ${D.cn?"checked":""}>${l.cn}</label>`)+(S.st==3?`<div class="er" style="margin-top:10px">${l.er}</div>`:"");}
+ const n=8,dots=Array.from({length:n},(_,i)=>`<i class="${i<=s?"on":""}"></i>`).join("");
+ return head(l.w[s])+`<main><div class="dots">${dots}</div><div class="step">${h}</div></main><div class="ft">${s?`<button class="btn g" data-a="bk" style="flex:.6">${l.bk}</button>`:""}<button class="btn" data-a="nx" ${s==7&&S.st==1?"disabled":""}>${s==7?l.sn:l.nx}</button></div>`}
+
+function success(){const l=L(),j=S.D.vac;return`<main><div class="ok" style="border-color:${cc(j)};color:${cc(j)}">${IC.ck}</div><h2 style="text-align:center">${l.sd}</h2><p class="mu" style="text-align:center">${l.sx}</p><button class="btn" data-a="fin" style="background:${cc(j)};margin-top:10px">${l.cl}</button></main>`}
+
+function render(){theme();$("#app").innerHTML=S.st==2?success():wizard()}
+
+function ok(){const D=S.D,l=L(),e={},req=[["fn","ln"],["ph"],["bd"],["lr","ds"],["vac"],["ex"],["sal"],["cn"]][S.step];
+ req.forEach(k=>{if(D[k]===undefined||D[k]==="")e[k]=l.rq});
+ if(S.step==1){if(D.ph&&D.ph.length<9)e.ph=l.bad;if(D.em&&!/^\S+@\S+\.\S+$/.test(D.em))e.em=l.bad}
+ if(S.step==2&&D.bd&&!vd(D.bd))e.bd=l.bad;
+ if(S.step==5&&D.ex===7&&!D.xt)e.ex=l.rq;
+ if(S.step==6&&D.sal===4&&!D.salt)e.sal=l.rq;
+ S.err=e;return!Object.keys(e).length}
+
+function payload(){const D=S.D,x=VC[D.vac];return{lang:S.lang,vacancy:x[0][0],first_name:D.fn,last_name:D.ln,full_name:D.fn+" "+D.ln,birth_date:D.bd,age:age(D.bd),phone:"+998"+D.ph,email:D.em||"",live_region:RG[D.lr][0],district:D.ds,education:"",experience:D.ex===7?D.xt:EL[0][D.ex],expected_salary:D.sal===4?D.salt+" so'm":SL[0][D.sal],about:""}}
+
+async function send(){S.st=1;render();try{if(!(tg&&tg.initData))throw 0;const r=await fetch("/api/apply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:tg.initData,payload:payload()})});if(!(await r.json()).ok)throw 0;S.st=2}catch(e){if(tg&&tg.initData&&!tg.initDataUnsafe.query_id){tg.sendData(JSON.stringify(payload()));return}S.st=3}render()}
+
+document.addEventListener("click",e=>{const b=e.target.closest("button,[data-c],[data-vo]");if(!b)return;const d=b.dataset;
  if(d.a=="lm"){S.lm=!S.lm}else if(d.a=="tg"){S.th=document.documentElement.dataset.th=="dark"?"light":"dark";ls.s("th",S.th)}
- else if(d.l){S.lang=d.l;S.lm=0;ls.s("lang",S.lang)}else if(d.t){S.th=d.t;ls.s("th",d.t)}
- else if(d.tab){S.tab=d.tab;S.open=-1}else if(d.o!==undefined){S.open=S.open==+d.o?-1:+d.o}else if(d.ap!==undefined){S.sh=+d.ap;S.st=0}
- else if(d.a=="sn")send();else if(d.a=="cl"){S.sh=-1}else if(d.a=="ed"){S.D={...S.P};S.step=0;S.wiz=1}else if(d.a=="rs"){S.P=null;ls.s("P",null);S.D={};S.step=0;S.wiz=1}
- else if(d.a=="nx"){if(!ok()){render();return}if(S.step<2){S.step++;S.err={}}else{S.P={...S.D};ls.s("P",S.P);S.wiz=0;S.tab="v"}}
- else if(d.a=="bk"){S.step--;S.err={}}else if(d.a=="dp"){const p=$("#dp");try{p.showPicker()}catch(x){p.click()};return}
+ else if(d.l){S.lang=d.l;S.lm=0;ls.s("lang",S.lang)}
+ else if(d.vo!==undefined){S.vopen=S.vopen==+d.vo?-1:+d.vo}
+ else if(d.a=="fin"){if(tg&&tg.close)tg.close();S.D={};S.err={};S.vopen=-1;S.step=0;S.st=0}
+ else if(d.a=="nx"){if(!ok()){render();return}if(S.step<7){S.step++;S.err={}}else{send();return}}
+ else if(d.a=="bk"){S.step--;S.err={}}
+ else if(d.a=="dp"){const p=$("#dp");try{p.showPicker()}catch(x){p.click()};return}
  else if(d.c){const[k,v]=d.c.split(":");S.D[k]=+v;delete S.err[k]}else return;render()});
 document.addEventListener("input",e=>{const t=e.target,d=t.dataset;if(d.bd!==undefined){const g=t.value.replace(/\D/g,"").slice(0,8);t.value=g.replace(/^(\d{2})(\d)/,"$1.$2").replace(/^(\d{2})\.(\d{2})(\d)/,"$1.$2.$3");S.D.bd=t.value}
  else if(d.ph!==undefined){S.D.ph=t.value.replace(/\D/g,"").slice(0,9);t.value=fp(S.D.ph)}else if(d.k)S.D[d.k]=t.value;else if(d.cb!==undefined){S.D.cn=t.checked}
  else if(t.id=="dp"&&t.value){const[y,m,dd]=t.value.split("-");S.D.bd=dd+"."+m+"."+y;render()}});
-document.addEventListener("change",e=>{const t=e.target;if(t.dataset.s){S.D[t.dataset.s]=t.value;if(t.dataset.s=="wr")S.D.br=brs(+t.value).length==1?"0":"";delete S.err[t.dataset.s];render()}else if(t.dataset.cb!==undefined)delete S.err.cn});
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset.s){S.D[t.dataset.s]=t.value;delete S.err[t.dataset.s];render()}});
 if(tg){tg.ready();tg.expand()}
 render();setTimeout(()=>{$("#sp").classList.add("out");setTimeout(()=>$("#sp").remove(),400)},1900);
 </script></body></html>
