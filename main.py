@@ -110,7 +110,7 @@ VACANCIES = list(VACANCY_DETAILS.keys())
 # FAQ — shu lug'atni o'zgartirish orqali savol-javoblarni boshqarasiz
 FAQ_DATA = {
     "interview": {
-        "question": "🎯 Suhbat jarayoni qanday o'tadi?",
+        "question": "❔ Suhbat jarayoni qanday o'tadi❔ ",
         "answer": (
             "Ariza yuborganingizdan so'ng, mos nomzodlar bilan HR bo'limi 1–2 ish kuni ichida "
             "bog'lanadi. Suhbat odatda ikki bosqichda o'tadi: avval qisqa telefon suhbati, "
@@ -119,7 +119,7 @@ FAQ_DATA = {
         ),
     },
     "vacation": {
-        "question": "🏖 Ta'til qanday beriladi?",
+        "question": " ❔ Ta'til qanday beriladi❔ ",
         "answer": (
             "Har bir xodim mehnat qonunchiligiga muvofiq yiliga 24 ish kuni asosiy ta'tilga "
             "ega. Ta'til sanalarini kamida 2 hafta oldin bevosita rahbaringiz va HR bo'limi "
@@ -127,7 +127,7 @@ FAQ_DATA = {
         ),
     },
     "salary": {
-        "question": "💰 Ish haqi qachon to'lanadi?",
+        "question": " ❔ Ish haqi qachon to'lanadi❔ ",
         "answer": (
             "Ish haqi har oyning 5- va 20-sanalarida, ikki bosqichda (avans va asosiy qism) "
             "plastik kartangizga o'tkaziladi. Barcha to'lovlar rasmiy mehnat shartnomasi "
@@ -135,7 +135,7 @@ FAQ_DATA = {
         ),
     },
     "schedule": {
-        "question": "🕘 Ish jadvali qanday?",
+        "question": "❔ Ish jadvali qanday❔ ",
         "answer": (
             "Ofis xodimlari uchun standart jadval — Dushanbadan Jumagacha, 09:00–18:00, "
             "tushlik uchun 1 soatlik tanaffus bilan. Call-center operatorlari uchun smena "
@@ -143,7 +143,7 @@ FAQ_DATA = {
         ),
     },
     "remote": {
-        "question": "🏠 Masofadan ishlash mumkinmi?",
+        "question": "❔ Masofadan ishlash mumkinmi❔ ",
         "answer": (
             "IT yo'nalishidagi bir qator lavozimlar uchun gibrid (qisman masofaviy) ish "
             "formati mavjud. Bu bo'lim rahbari va vazifalar xususiyatiga qarab belgilanadi — "
@@ -151,7 +151,7 @@ FAQ_DATA = {
         ),
     },
     "contract": {
-        "question": "📄 Mehnat shartnomasi qanday tuziladi?",
+        "question": "❔ Mehnat shartnomasi qanday tuziladi❔ ",
         "answer": (
             "Ishga qabul qilingan kuningizdayoq O'zbekiston mehnat qonunchiligiga muvofiq "
             "rasmiy mehnat shartnomasi tuziladi. Sinov muddati — 3 oy, bu davrda ham barcha "
@@ -182,8 +182,8 @@ class ApplyForm(StatesGroup):
 def main_menu():
     rows = []
     if WEBAPP_URL:
-        rows.append([KeyboardButton(text="🚀 Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))])
-    rows.append([KeyboardButton(text="💼 Bo'sh ish o'rinlari")])
+        rows.append([KeyboardButton(text=" Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))])
+    rows.append([KeyboardButton(text="❕ Bo'sh ish o'rinlari❕ ")])
     rows.append([KeyboardButton(text="📁 Portfolio"), KeyboardButton(text="❓ FAQ")])
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True)
 
@@ -193,7 +193,7 @@ def start_inline_kb():
     if not WEBAPP_URL:
         return None
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🚀 Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))]
+        [InlineKeyboardButton(text=" Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))]
     ])
 
 
