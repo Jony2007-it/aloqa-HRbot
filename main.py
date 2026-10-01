@@ -1,12 +1,8 @@
 import asyncio
-import hashlib
-import hmac
 import html
 import json
 import logging
 import os
-import time
-from urllib.parse import parse_qsl
 
 from aiogram import Bot, Dispatcher, Router, F
 from aiohttp import web
@@ -522,21 +518,6 @@ WEBAPP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webapp")
 esc = lambda v: html.escape(str(v if v is not None else ""))
 
 
-def verify_init_data(init_data: str, token: str, max_age: int = 172800):
-    """Telegram Mini App initData'ni tekshiradi. To'g'ri bo'lsa user (dict) qaytaradi."""
-    try:
-        pairs = dict(parse_qsl(init_data, keep_blank_values=True))
-        got = pairs.pop("hash", "")
-        check = "\n".join(f"{k}={v}" for k, v in sorted(pairs.items()))
-        secret = hmac.new(b"WebAppData", token.encode(), hashlib.sha256).digest()
-        calc = hmac.new(secret, check.encode(), hashlib.sha256).hexdigest()
-        if not hmac.compare_digest(calc, got) or time.time() - int(pairs.get("auth_date", 0)) > max_age:
-            return None
-        return json.loads(pairs.get("user", "{}"))
-    except Exception:
-        return None
-
-
 def build_admin_text(p: dict, user: dict) -> str:
     g = lambda k: esc(p.get(k, ""))
     uname = user.get("username")
@@ -572,26 +553,6 @@ THANKS = {
 }
 
 
-async def api_apply(request: web.Request):
-    bot: Bot = request.app["bot"]
-    try:
-        data = await request.json()
-        user = verify_init_data(data.get("initData", ""), BOT_TOKEN)
-        if not user:
-            return web.json_response({"ok": False, "error": "auth"}, status=401)
-        p = data.get("payload") or {}
-        if not await notify_admins(bot, build_admin_text(p, user)):
-            return web.json_response({"ok": False, "error": "delivery"}, status=502)
-        try:
-            await bot.send_message(user["id"], THANKS.get(p.get("lang"), THANKS["uz"]))
-        except Exception:
-            pass
-        return web.json_response({"ok": True})
-    except Exception:
-        logging.exception("api_apply xatosi")
-        return web.json_response({"ok": False}, status=400)
-
-
 async def index_page(request: web.Request):
     return web.FileResponse(
         os.path.join(WEBAPP_DIR, "index.html"), headers={"Cache-Control": "no-cache"}
@@ -603,7 +564,6 @@ async def start_web_server(bot: Bot):
     app["bot"] = bot
     app.router.add_get("/", index_page)
     app.router.add_get("/health", lambda r: web.Response(text="ok"))
-    app.router.add_post("/api/apply", api_apply)
     app.router.add_static("/", WEBAPP_DIR, show_index=False)
     runner = web.AppRunner(app)
     await runner.setup()
