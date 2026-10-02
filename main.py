@@ -1,10 +1,17 @@
 import asyncio
+import base64
+import binascii
+import hashlib
+import hmac
 import html
 import json
 import logging
 import os
+import time
+from urllib.parse import parse_qsl
 
 from aiogram import Bot, Dispatcher, Router, F
+from aiogram.types import BufferedInputFile
 from aiohttp import web
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -110,7 +117,7 @@ VACANCIES = list(VACANCY_DETAILS.keys())
 # FAQ — shu lug'atni o'zgartirish orqali savol-javoblarni boshqarasiz
 FAQ_DATA = {
     "interview": {
-        "question": "❔ Suhbat jarayoni qanday o'tadi❔ ",
+        "question": "🎯 Suhbat jarayoni qanday o'tadi?",
         "answer": (
             "Ariza yuborganingizdan so'ng, mos nomzodlar bilan HR bo'limi 1–2 ish kuni ichida "
             "bog'lanadi. Suhbat odatda ikki bosqichda o'tadi: avval qisqa telefon suhbati, "
@@ -119,7 +126,7 @@ FAQ_DATA = {
         ),
     },
     "vacation": {
-        "question": " ❔ Ta'til qanday beriladi❔ ",
+        "question": "🏖 Ta'til qanday beriladi?",
         "answer": (
             "Har bir xodim mehnat qonunchiligiga muvofiq yiliga 24 ish kuni asosiy ta'tilga "
             "ega. Ta'til sanalarini kamida 2 hafta oldin bevosita rahbaringiz va HR bo'limi "
@@ -127,7 +134,7 @@ FAQ_DATA = {
         ),
     },
     "salary": {
-        "question": " ❔ Ish haqi qachon to'lanadi❔ ",
+        "question": "💰 Ish haqi qachon to'lanadi?",
         "answer": (
             "Ish haqi har oyning 5- va 20-sanalarida, ikki bosqichda (avans va asosiy qism) "
             "plastik kartangizga o'tkaziladi. Barcha to'lovlar rasmiy mehnat shartnomasi "
@@ -135,7 +142,7 @@ FAQ_DATA = {
         ),
     },
     "schedule": {
-        "question": "❔ Ish jadvali qanday❔ ",
+        "question": "🕘 Ish jadvali qanday?",
         "answer": (
             "Ofis xodimlari uchun standart jadval — Dushanbadan Jumagacha, 09:00–18:00, "
             "tushlik uchun 1 soatlik tanaffus bilan. Call-center operatorlari uchun smena "
@@ -143,7 +150,7 @@ FAQ_DATA = {
         ),
     },
     "remote": {
-        "question": "❔ Masofadan ishlash mumkinmi❔ ",
+        "question": "🏠 Masofadan ishlash mumkinmi?",
         "answer": (
             "IT yo'nalishidagi bir qator lavozimlar uchun gibrid (qisman masofaviy) ish "
             "formati mavjud. Bu bo'lim rahbari va vazifalar xususiyatiga qarab belgilanadi — "
@@ -151,7 +158,7 @@ FAQ_DATA = {
         ),
     },
     "contract": {
-        "question": "❔ Mehnat shartnomasi qanday tuziladi❔ ",
+        "question": "📄 Mehnat shartnomasi qanday tuziladi?",
         "answer": (
             "Ishga qabul qilingan kuningizdayoq O'zbekiston mehnat qonunchiligiga muvofiq "
             "rasmiy mehnat shartnomasi tuziladi. Sinov muddati — 3 oy, bu davrda ham barcha "
@@ -182,8 +189,8 @@ class ApplyForm(StatesGroup):
 def main_menu():
     rows = []
     if WEBAPP_URL:
-        rows.append([KeyboardButton(text=" Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))])
-    rows.append([KeyboardButton(text="❕ Bo'sh ish o'rinlari❕ ")])
+        rows.append([KeyboardButton(text="🚀 Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))])
+    rows.append([KeyboardButton(text="💼 Bo'sh ish o'rinlari")])
     rows.append([KeyboardButton(text="📁 Portfolio"), KeyboardButton(text="❓ FAQ")])
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True)
 
@@ -193,7 +200,7 @@ def start_inline_kb():
     if not WEBAPP_URL:
         return None
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=" Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))]
+        [InlineKeyboardButton(text="🚀 Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))]
     ])
 
 
@@ -518,9 +525,29 @@ WEBAPP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webapp")
 esc = lambda v: html.escape(str(v if v is not None else ""))
 
 
+def verify_init_data(init_data: str, token: str, max_age: int = 172800):
+    """Telegram Mini App initData'ni tekshiradi. To'g'ri bo'lsa user (dict) qaytaradi."""
+    try:
+        pairs = dict(parse_qsl(init_data, keep_blank_values=True))
+        got = pairs.pop("hash", "")
+        check = "\n".join(f"{k}={v}" for k, v in sorted(pairs.items()))
+        secret = hmac.new(b"WebAppData", token.encode(), hashlib.sha256).digest()
+        calc = hmac.new(secret, check.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(calc, got) or time.time() - int(pairs.get("auth_date", 0)) > max_age:
+            return None
+        return json.loads(pairs.get("user", "{}"))
+    except Exception:
+        return None
+
+
 def build_admin_text(p: dict, user: dict) -> str:
     g = lambda k: esc(p.get(k, ""))
     uname = user.get("username")
+    resume_line = ""
+    if p.get("resume_text"):
+        resume_line = f"📝 Rezyume: {g('resume_text')}\n"
+    elif p.get("resume_file"):
+        resume_line = "📎 Rezyume: fayl biriktirilgan (pastda)\n"
     return (
         "🆕 <b>Yangi ariza (Mini App)</b>\n\n"
         f"💼 Vakansiya: <b>{g('vacancy')}</b>\n"
@@ -529,7 +556,9 @@ def build_admin_text(p: dict, user: dict) -> str:
         f"📱 Telefon: {g('phone')}\n"
         f"✉️ Email: {g('email') or '—'}\n"
         f"📍 Yashash joyi: {g('live_region')}, {g('district')}\n"
+        f"🏢 Ishlamoqchi bo'lgan hudud: {g('work_region')}\n"
         f"🛠 Tajriba: {g('experience')}\n"
+        f"{resume_line}"
         f"💰 Kutilayotgan maosh: {g('expected_salary')}\n"
         f"🆔 Telegram: {'@' + esc(uname) if uname else 'yoq'} (ID: {user.get('id')})"
     )[:4000]
@@ -553,6 +582,45 @@ THANKS = {
 }
 
 
+async def api_apply(request: web.Request):
+    bot: Bot = request.app["bot"]
+    try:
+        data = await request.json()
+    except Exception:
+        return web.json_response({"ok": False, "error": "bad_json"}, status=400)
+
+    user = verify_init_data(data.get("initData", ""), BOT_TOKEN)
+    if not user:
+        return web.json_response({"ok": False, "error": "auth"}, status=401)
+
+    p = data.get("payload") or {}
+
+    if not await notify_admins(bot, build_admin_text(p, user)):
+        return web.json_response({"ok": False, "error": "delivery"}, status=502)
+
+    resume_file = p.get("resume_file")
+    if resume_file and resume_file.get("data"):
+        try:
+            file_bytes = base64.b64decode(resume_file["data"])
+            if len(file_bytes) > 8 * 1024 * 1024:
+                raise ValueError("resume too large")
+            doc = BufferedInputFile(file_bytes, filename=resume_file.get("name") or "resume.pdf")
+            for admin_id in ADMIN_IDS:
+                try:
+                    await bot.send_document(admin_id, doc, caption=f"📎 Rezyume — {esc(p.get('full_name'))}")
+                except Exception as e:
+                    logging.warning("Rezyume yuborib bo'lmadi (%s): %s", admin_id, e)
+        except (binascii.Error, ValueError) as e:
+            logging.warning("Rezyume faylini o'qib bo'lmadi: %s", e)
+
+    try:
+        await bot.send_message(user["id"], THANKS.get(p.get("lang"), THANKS["uz"]))
+    except Exception:
+        pass
+
+    return web.json_response({"ok": True})
+
+
 async def index_page(request: web.Request):
     return web.FileResponse(
         os.path.join(WEBAPP_DIR, "index.html"), headers={"Cache-Control": "no-cache"}
@@ -560,10 +628,11 @@ async def index_page(request: web.Request):
 
 
 async def start_web_server(bot: Bot):
-    app = web.Application(client_max_size=1024 * 1024)
+    app = web.Application(client_max_size=12 * 1024 * 1024)
     app["bot"] = bot
     app.router.add_get("/", index_page)
     app.router.add_get("/health", lambda r: web.Response(text="ok"))
+    app.router.add_post("/api/apply", api_apply)
     app.router.add_static("/", WEBAPP_DIR, show_index=False)
     runner = web.AppRunner(app)
     await runner.setup()
