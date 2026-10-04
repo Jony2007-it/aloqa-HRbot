@@ -96,14 +96,19 @@ nav button{flex:1;border:0;background:none;padding:9px 0 8px;color:var(--mu);fon
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:flex-end}
 .ov>div{background:var(--bg);width:100%;border-radius:18px 18px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
 .ov h3{margin:0 0 16px;font-size:16px}
-.ov .row select{height:46px}
+.dpo{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--bd);padding:13px 4px;cursor:pointer;font-size:15px}
+.dpo.on{color:var(--ac);font-weight:600}
+.dpo:last-child{border-bottom:0}
 </style></head><body>
 <div id="sp"><div class="hero"></div><div class="lg" style="width:210px"><img class="k" src="logo-ink.png"><img class="b" src="logo-blue.png"></div><i></i></div>
 <div id="app"></div>
 <script>
 const tg=window.Telegram&&Telegram.WebApp,LI={uz:0,ru:1,en:2};
-// ===== Filiallar (ixtiyoriy, faqat "Kompaniya" bo'limida ko'rsatiladi) =====
-const BR={};
+// ===== Filiallar: hudud tanlanganda pastda avtomatik chiqadi. RG massividagi indeksga mos =====
+const BR={
+ 0:["Toshkent shahar filiali","Chilonzor filiali","Yunusobod filiali","Sergeli filiali"],   // Toshkent shahri
+ 7:["Namangan shahar 1-filial","Namangan shahar 2-filial","Yangiqo'rg'on filiali","Shodlik filiali"], // Namangan
+};
 const RG=[["Toshkent shahri","город Ташкент","Tashkent city"],["Toshkent viloyati","Ташкентская область","Tashkent region"],["Andijon","Андижан","Andijan"],["Buxoro","Бухара","Bukhara"],["Farg'ona","Фергана","Fergana"],["Jizzax","Джизак","Jizzakh"],["Xorazm","Хорезм","Khorezm"],["Namangan","Наманган","Namangan"],["Navoiy","Навои","Navoi"],["Qashqadaryo","Кашкадарья","Kashkadarya"],["Qoraqalpog'iston","Каракалпакстан","Karakalpakstan"],["Samarqand","Самарканд","Samarkand"],["Sirdaryo","Сырдарья","Syrdarya"],["Surxondaryo","Сурхандарья","Surkhandarya"]];
 const EL=[["Tajribasiz","1 oy","3 oy","9 oy","1 yil","3 yil","6+ yil"],["Без опыта","1 мес.","3 мес.","9 мес.","1 год","3 года","6+ лет"],["None","1 mo","3 mo","9 mo","1 yr","3 yrs","6+ yrs"]];
 const MN=[["Yanvar","Fevral","Mart","Aprel","May","Iyun","Iyul","Avgust","Sentabr","Oktabr","Noyabr","Dekabr"],
@@ -135,7 +140,7 @@ const VC=[
 [["Loyiha menejeri","IT avtomatlashtirish loyihalarini rejalashtirasiz va jamoani muvofiqlashtirasiz.",["Loyihalarni boshqarish tajribasi (afzallik)","Aniq va tizimli fikrlash","Jamoa bilan ishlay olish"]],["Руководитель проектов","Планирование проектов IT-автоматизации и координация команды.",["Опыт управления проектами (плюс)","Системное мышление","Умение работать в команде"]],["Project Manager","Plan IT automation projects and coordinate the team.",["Project management experience (a plus)","Structured thinking","Team player"]]]];
 const T={uz:{v:"Vakansiyalar",c:"Kompaniya",rm:"Talablar",ap:"Ariza topshirish",
 w:["Shaxsiy ma'lumotlar","Aloqa ma'lumotlari","Tug'ilgan sana","Yashash manzili","Ishlamoqchi bo'lgan hudud","Lavozim","Ish tajribasi","Rezyume","Kutilayotgan maosh","Tekshirib chiqing"],
-fn:"Ism",ln:"Familiya",bd:"Tug'ilgan sana",ph:"Telefon raqami",em:"Elektron pochta (ixtiyoriy)",lr:"Viloyat",ds:"Tuman / shahar",wr:"Qaysi hududda ishlamoqchisiz?",
+fn:"Ism",ln:"Familiya",bd:"Tug'ilgan sana",ph:"Telefon raqami",em:"Elektron pochta (ixtiyoriy)",lr:"Viloyat",ds:"Tuman / shahar",wr:"Qaysi hududda ishlamoqchisiz?",br:"Filialni tanlang",
 ex:"Ish tajribasi",ot:"Boshqa",exp:"Tajribangizni yozing",sal:"Kutilayotgan maosh",salc:"Summani kiriting (so'mda)",
 rzt:"Matn sifatida",rzf:"Fayl yuklash",rzp:"O'zingiz, ta'limingiz va ish tajribangiz haqida qisqacha yozing",rzfh:"PDF yoki Word faylni tanlang",rzfs:"bosing yoki shu yerga tashlang",rzfm:"Fayl hajmi 8 MB dan oshmasin",
 pk:"Tanlang",nx:"Keyingi",bk:"Orqaga",rq:"To'ldirish shart",bad:"Noto'g'ri format",
@@ -148,7 +153,7 @@ ai:"Aloqabor — outsourcing call-center xizmati va IT avtomatlashtirish kompani
 s1:"Call-center xizmatlari",s1d:"Mijozlar bilan aloqa, buyurtmalarni qabul qilish va qo'llab-quvvatlash xizmati.",s2:"IT avtomatlashtirish",s2d:"Botlar, CRM va ichki tizimlarni ishlab chiqib, jarayonlarni avtomatlashtiramiz.",fl:"Filiallar",salb:"Maosh",neg:"Kelishuv asosida"},
 ru:{v:"Вакансии",c:"Компания",rm:"Требования",ap:"Откликнуться",
 w:["Личные данные","Контактные данные","Дата рождения","Адрес проживания","Желаемый регион работы","Должность","Опыт работы","Резюме","Ожидаемая зарплата","Проверьте данные"],
-fn:"Имя",ln:"Фамилия",bd:"Дата рождения",ph:"Номер телефона",em:"Эл. почта (необязательно)",lr:"Область",ds:"Район / город",wr:"В каком регионе хотите работать?",
+fn:"Имя",ln:"Фамилия",bd:"Дата рождения",ph:"Номер телефона",em:"Эл. почта (необязательно)",lr:"Область",ds:"Район / город",wr:"В каком регионе хотите работать?",br:"Выберите филиал",
 ex:"Опыт работы",ot:"Другое",exp:"Опишите ваш опыт",sal:"Ожидаемая зарплата",salc:"Укажите сумму (в сумах)",
 rzt:"Текстом",rzf:"Загрузить файл",rzp:"Кратко расскажите о себе, образовании и опыте работы",rzfh:"Выберите файл PDF или Word",rzfs:"нажмите или перетащите сюда",rzfm:"Размер файла не должен превышать 8 МБ",
 pk:"Выберите",nx:"Далее",bk:"Назад",rq:"Обязательное поле",bad:"Неверный формат",
@@ -161,7 +166,7 @@ ai:"Aloqabor — компания в сфере аутсорсинга колл-
 s1:"Услуги колл-центра",s1d:"Общение с клиентами, приём заказов и служба поддержки.",s2:"IT-автоматизация",s2d:"Разрабатываем ботов, CRM и внутренние системы, автоматизируя процессы.",fl:"Филиалы",salb:"Зарплата",neg:"По договорённости"},
 en:{v:"Jobs",c:"Company",rm:"Requirements",ap:"Apply",
 w:["Personal details","Contact details","Date of birth","Home address","Preferred work region","Position","Work experience","Resume","Expected salary","Review"],
-fn:"First name",ln:"Last name",bd:"Date of birth",ph:"Phone number",em:"Email (optional)",lr:"Region",ds:"District / city",wr:"Which region would you like to work in?",
+fn:"First name",ln:"Last name",bd:"Date of birth",ph:"Phone number",em:"Email (optional)",lr:"Region",ds:"District / city",wr:"Which region would you like to work in?",br:"Select branch",
 ex:"Work experience",ot:"Other",exp:"Describe your experience",sal:"Expected salary",salc:"Enter amount (UZS)",
 rzt:"As text",rzf:"Upload file",rzp:"Briefly describe yourself, your education and work experience",rzfh:"Choose a PDF or Word file",rzfs:"tap or drop it here",rzfm:"File size must not exceed 8 MB",
 pk:"Select",nx:"Next",bk:"Back",rq:"Required",bad:"Invalid format",
@@ -174,7 +179,7 @@ ai:"Aloqabor is a company in outsourced call-center services and IT automation. 
 s1:"Call-center services",s1d:"Customer communication, order intake and support.",s2:"IT automation",s2d:"We build bots, CRMs and internal systems to automate processes.",fl:"Branches",salb:"Salary",neg:"Negotiable"}};
 const ls={g:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const tl=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.language_code;
-const S={lang:ls.g("lang")||(tl in LI?tl:"uz"),th:ls.g("th")||"auto",D:{rzmode:"text"},err:{},step:0,vopen:-1,st:0,lm:0,dp:null};
+const S={lang:ls.g("lang")||(tl in LI?tl:"uz"),th:ls.g("th")||"auto",D:{rzmode:"text"},err:{},step:0,vopen:-1,st:0,lm:0,dp:null,dpField:null};
 const L=()=>T[S.lang],I=()=>LI[S.lang],$=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function theme(){const d=S.th=="auto"?(tg&&tg.colorScheme)||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"):S.th;document.documentElement.dataset.th=d;try{tg.setHeaderColor(d=="dark"?"#0e0f12":"#ffffff");tg.setBackgroundColor(d=="dark"?"#0e0f12":"#ffffff")}catch(e){}return d}
 const age=s=>{const[d,m,y]=s.split(".").map(Number),n=new Date();let a=n.getFullYear()-y;if(n.getMonth()+1<m||(n.getMonth()+1==m&&n.getDate()<d))a--;return a};
@@ -193,16 +198,23 @@ function head(t){const d=document.documentElement.dataset.th;return`<header><h1>
 
 function dpView(){const l=L(),m=MN[I()];
  const now=new Date(),minY=now.getFullYear()-80,maxY=now.getFullYear()-16;
- const cur=S.D.bd&&vd(S.D.bd)?S.D.bd.split("."):null;
  const dd=S.dp.d,mm=S.dp.m,yy=S.dp.y;
- const days=Array.from({length:31},(_,i)=>i+1);
  const years=Array.from({length:maxY-minY+1},(_,i)=>maxY-i);
- const opt=(v,arr,cur,txt)=>arr.map(x=>`<option value="${x}" ${String(x)===String(cur)?"selected":""}>${txt?txt(x):x}</option>`).join("");
- return `<div class="ov" data-ov="1"><div><h3>${l.dpt}</h3><div class="row">
-  <div><label>${l.dpd}</label><select data-dp="d">${opt(0,days,dd)}</select></div>
-  <div><label>${l.dpm}</label><select data-dp="m">${opt(0,m.map((_,i)=>i+1),mm,v=>m[v-1])}</select></div>
-  <div><label>${l.dpy}</label><select data-dp="y">${opt(0,years,yy)}</select></div>
- </div><div class="ft" style="position:static;border:0;padding:18px 0 0"><button class="btn g" data-a="dpc" style="flex:.6">${l.dpc}</button><button class="btn" data-a="dpok">${l.dpok}</button></div></div></div>`}
+ const chev='<svg viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M6 9l6 6 6-6"/></svg>';
+ const trig=(field,label,val)=>`<div><label>${label}</label><button type="button" class="pf" data-dpf="${field}" style="width:100%;height:46px;padding:0 14px;cursor:pointer;background:var(--bg)"><span style="flex:1;text-align:left;padding-left:0">${val}</span>${chev}</button></div>`;
+ const picker=trig("d",l.dpd,dd)+trig("m",l.dpm,m[mm-1])+trig("y",l.dpy,yy);
+ let sub="";
+ if(S.dpField){
+  let opts,cur;
+  if(S.dpField=="d"){opts=Array.from({length:31},(_,i)=>({v:i+1,t:String(i+1)}));cur=dd}
+  else if(S.dpField=="m"){opts=m.map((name,i)=>({v:i+1,t:name}));cur=mm}
+  else{opts=years.map(y=>({v:y,t:String(y)}));cur=yy}
+  sub=`<div class="ov" data-ov="2" style="z-index:46"><div style="max-height:62vh;display:flex;flex-direction:column">
+   <h3>${S.dpField=="d"?l.dpd:S.dpField=="m"?l.dpm:l.dpy}</h3>
+   <div style="overflow-y:auto;margin:0 -18px;padding:0 18px">${opts.map(o=>`<button type="button" class="dpo ${String(o.v)===String(cur)?"on":""}" data-dpv="${S.dpField}:${o.v}">${o.t}</button>`).join("")}</div>
+  </div></div>`;
+ }
+ return `<div class="ov" data-ov="1"><div><h3>${l.dpt}</h3><div class="row">${picker}</div><div class="ft" style="position:static;border:0;padding:18px 0 0"><button class="btn g" data-a="dpc" style="flex:.6">${l.dpc}</button><button class="btn" data-a="dpok">${l.dpok}</button></div></div></div>${sub}`}
 
 function rzBlock(l,D){
  const tabs=`<div class="seg"><button class="${D.rzmode=="text"?"on":""}" data-rm="text">${l.rzt}</button><button class="${D.rzmode=="file"?"on":""}" data-rm="file">${l.rzf}</button></div>`;
@@ -219,12 +231,14 @@ function wizard(){const l=L(),D=S.D,s=S.step;let h="";
  if(s==1)h=fld("ph",l.ph,`<div class="pf"><span>+998</span><input data-ph inputmode="numeric" placeholder="90 123 45 67" maxlength="12" value="${fp(D.ph)}"></div>`)+inp("em",l.em,"email",'autocapitalize="none" placeholder="name@mail.com"');
  if(s==2)h=fld("bd",l.bd,`<button type="button" class="pf" data-a="dpopen" style="width:100%;height:48px;padding-left:14px;text-align:left;background:var(--bg);cursor:pointer"><span style="padding-left:0;flex:1;color:${D.bd?"var(--tx)":"var(--mu)"}">${esc(D.bd)||"DD.MM.YYYY"}</span><span style="padding-right:14px">${IC.ca}</span></button>`);
  if(s==3)h=sel("lr",l.lr,RG.map(r=>r[I()]))+inp("ds",l.ds,"text");
- if(s==4)h=sel("wr",l.wr,RG.map(r=>r[I()]));
+ if(s==4){h=sel("wr",l.wr,RG.map(r=>r[I()]));
+  if(D.wr!==undefined&&D.wr!==""&&BR[D.wr]&&BR[D.wr].length)h+=sel("wrBranch",l.br,BR[D.wr]);
+ }
  if(s==5)h=fld("vac","",VC.map((v,i)=>{const x=v[I()],exp=S.vopen===i;return`<div class="vch ${D.vac===i?"on":""}" style="--cc:${cc(i)};--cb:${hx(cc(i),.1)}">${poster(i)}<div class="vrow" data-c="vac:${i}"><span style="flex:1;min-width:0"><b>${x[0]}</b><br><span class="mu sm">${x[1]}</span><br><span class="sal">${salIc}${offerTxt(i)}</span></span><u></u></div><button type="button" class="mu sm" data-vo="${i}" style="background:none;border:0;padding:9px 0 0;text-decoration:underline;cursor:pointer">${l.rm} ${exp?"▲":"▼"}</button>${exp?`<ul style="margin:6px 0 0 18px;color:var(--mu);font-size:12.5px">${x[2].map(r=>`<li>${r}</li>`).join("")}</ul>`:""}</div>`}).join(""));
  if(s==6)h=fld("ex","",chips("ex",EL[I()].concat(l.ot)))+(D.ex===7?`<div style="margin-top:10px"><input data-k="xt" placeholder="${l.exp}" value="${esc(D.xt)}"></div>`:"");
  if(s==7)h=rzBlock(l,D);
  if(s==8)h=fld("sal","",chips("sal",SL[I()].concat(l.ot)))+(D.sal===4?`<div style="margin-top:10px"><input data-k="salt" inputmode="numeric" placeholder="${l.salc}" value="${esc(D.salt)}"></div>`:"");
- if(s==9){const x=VC[D.vac][I()],rows=[[l.rv1,`${esc(D.fn)} ${esc(D.ln)}`],[l.rv2,"+998 "+fp(D.ph)],[l.rv3,esc(D.em)||"—"],[l.rv4,esc(D.bd)],[l.rv5,`${RG[D.lr][I()]}, ${esc(D.ds)}`],[l.rv6,RG[D.wr][I()]],[l.rv7,x[0]],[l.rv8,D.ex===7?esc(D.xt):EL[I()][D.ex]],[l.rv9,D.rzmode=="file"?(D.rzFileName?l.rzfOk:"—"):(esc(D.rz)||"—")],[l.rv10,D.sal===4?esc(D.salt)+" so'm":SL[I()][D.sal]]];
+ if(s==9){const x=VC[D.vac][I()],rows=[[l.rv1,`${esc(D.fn)} ${esc(D.ln)}`],[l.rv2,"+998 "+fp(D.ph)],[l.rv3,esc(D.em)||"—"],[l.rv4,esc(D.bd)],[l.rv5,`${RG[D.lr][I()]}, ${esc(D.ds)}`],[l.rv6,BR[D.wr]&&D.wrBranch!==undefined&&D.wrBranch!==""?`${RG[D.wr][I()]} — ${BR[D.wr][D.wrBranch]}`:RG[D.wr][I()]],[l.rv7,x[0]],[l.rv8,D.ex===7?esc(D.xt):EL[I()][D.ex]],[l.rv9,D.rzmode=="file"?(D.rzFileName?l.rzfOk:"—"):(esc(D.rz)||"—")],[l.rv10,D.sal===4?esc(D.salt)+" so'm":SL[I()][D.sal]]];
   h=`<div class="det-h">${vi(D.vac,"lg")}<span class="tx"><b>${x[0]}</b></span></div>`+rows.map(r=>`<div class="rv"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")+fld("cn","",`<label class="cb"><input type="checkbox" data-cb ${D.cn?"checked":""}>${l.cn}</label>`)+(S.st==3?`<div class="er" style="margin-top:10px">${l.er}</div>`:"");}
  const n=10,dots=Array.from({length:n},(_,i)=>`<i class="${i<=s?"on":""}"></i>`).join("");
  return head(l.w[s])+`<main><div class="dots">${dots}</div><div class="step">${h}</div></main><div class="ft">${s?`<button class="btn g" data-a="bk" style="flex:.6">${l.bk}</button>`:""}<button class="btn" data-a="nx" ${s==9&&S.st==1?"disabled":""}>${s==9?l.sn:l.nx}</button></div>${S.dp?dpView():""}`}
@@ -239,12 +253,13 @@ function ok(){const D=S.D,l=L(),e={},req=[["fn","ln"],["ph"],["bd"],["lr","ds"],
  req.forEach(k=>{if(D[k]===undefined||D[k]==="")e[k]=l.rq});
  if(S.step==1){if(D.ph&&D.ph.length<9)e.ph=l.bad;if(D.em&&!/^\S+@\S+\.\S+$/.test(D.em))e.em=l.bad}
  if(S.step==2&&D.bd&&!vd(D.bd))e.bd=l.bad;
+ if(S.step==4&&D.wr!==undefined&&D.wr!==""&&BR[D.wr]&&BR[D.wr].length&&(D.wrBranch===undefined||D.wrBranch===""))e.wrBranch=l.rq;
  if(S.step==6&&D.ex===7&&!D.xt)e.ex=l.rq;
  if(S.step==7){const okRz=D.rzmode=="file"?!!D.rzFileName:!!(D.rz&&D.rz.trim());if(!okRz)e.rz=l.rq}
  if(S.step==8&&D.sal===4&&!D.salt)e.sal=l.rq;
  S.err=e;return!Object.keys(e).length}
 
-function payload(){const D=S.D,x=VC[D.vac];return{lang:S.lang,vacancy:x[0][0],first_name:D.fn,last_name:D.ln,full_name:D.fn+" "+D.ln,birth_date:D.bd,age:age(D.bd),phone:"+998"+D.ph,email:D.em||"",live_region:RG[D.lr][0],district:D.ds,work_region:RG[D.wr][0],experience:D.ex===7?D.xt:EL[0][D.ex],resume_text:D.rzmode=="text"?(D.rz||""):"",resume_file:D.rzmode=="file"&&D.rzFileName?{name:D.rzFileName,mime:D.rzFileMime,data:D.rzFileB64}:null,expected_salary:D.sal===4?D.salt+" so'm":SL[0][D.sal]}}
+function payload(){const D=S.D,x=VC[D.vac];const branch=BR[D.wr]&&D.wrBranch!==undefined&&D.wrBranch!==""?BR[D.wr][D.wrBranch]:"";return{lang:S.lang,vacancy:x[0][0],first_name:D.fn,last_name:D.ln,full_name:D.fn+" "+D.ln,birth_date:D.bd,age:age(D.bd),phone:"+998"+D.ph,email:D.em||"",live_region:RG[D.lr][0],district:D.ds,work_region:branch?`${RG[D.wr][0]} — ${branch}`:RG[D.wr][0],experience:D.ex===7?D.xt:EL[0][D.ex],resume_text:D.rzmode=="text"?(D.rz||""):"",resume_file:D.rzmode=="file"&&D.rzFileName?{name:D.rzFileName,mime:D.rzFileMime,data:D.rzFileB64}:null,expected_salary:D.sal===4?D.salt+" so'm":SL[0][D.sal]}}
 
 async function send(){
  S.st=1;render();
@@ -272,10 +287,13 @@ document.addEventListener("click",e=>{const b=e.target.closest("button,[data-c],
  else if(d.a=="rzpick"){const fi=$("#rzfile");if(fi)fi.click();return}
  else if(d.a=="rzrm"){S.D.rzFileName=null;S.D.rzFileB64=null}
  else if(d.rm){S.D.rzmode=d.rm}
- else if(d.a=="dpopen"){const cur=S.D.bd&&vd(S.D.bd)?S.D.bd.split("."):null;S.dp={d:cur?+cur[0]:15,m:cur?+cur[1]:6,y:cur?+cur[2]:new Date().getFullYear()-20}}
- else if(d.a=="dpc"){S.dp=null}
- else if(d.a=="dpok"){const p=n=>String(n).padStart(2,"0");S.D.bd=`${p(S.dp.d)}.${p(S.dp.m)}.${S.dp.y}`;S.dp=null;delete S.err.bd}
- else if(d.ov){if(e.target===b)S.dp=null}
+ else if(d.a=="dpopen"){const cur=S.D.bd&&vd(S.D.bd)?S.D.bd.split("."):null;S.dp={d:cur?+cur[0]:15,m:cur?+cur[1]:6,y:cur?+cur[2]:new Date().getFullYear()-20};S.dpField=null}
+ else if(d.a=="dpc"){S.dp=null;S.dpField=null}
+ else if(d.a=="dpok"){const p=n=>String(n).padStart(2,"0");S.D.bd=`${p(S.dp.d)}.${p(S.dp.m)}.${S.dp.y}`;S.dp=null;S.dpField=null;delete S.err.bd}
+ else if(d.dpf){S.dpField=d.dpf;return render()}
+ else if(d.dpv){const[f,v]=d.dpv.split(":");S.dp[f]=+v;S.dpField=null}
+ else if(d.ov=="2"){if(e.target===b)S.dpField=null}
+ else if(d.ov=="1"){if(e.target===b){S.dp=null;S.dpField=null}}
  else if(d.a=="fin"){if(tg&&tg.close)tg.close();S.D={rzmode:"text"};S.err={};S.vopen=-1;S.step=0;S.st=0}
  else if(d.a=="nx"){if(!ok()){render();return}if(S.step<9){S.step++;S.err={}}else{send();return}}
  else if(d.a=="bk"){S.step--;S.err={}}
@@ -283,7 +301,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button,[data-c],
 document.addEventListener("input",e=>{const t=e.target,d=t.dataset;
  if(d.ph!==undefined){S.D.ph=t.value.replace(/\D/g,"").slice(0,9);t.value=fp(S.D.ph)}else if(d.k)S.D[d.k]=t.value;else if(d.cb!==undefined){S.D.cn=t.checked}});
 document.addEventListener("change",e=>{const t=e.target,d=t.dataset;
- if(d.s){S.D[d.s]=t.value;delete S.err[d.s];render()}
+ if(d.s){S.D[d.s]=t.value;delete S.err[d.s];if(d.s=="wr"){delete S.D.wrBranch;delete S.err.wrBranch}render()}
  else if(d.dp){S.dp[d.dp]=+t.value}});
 if(tg){tg.ready();tg.expand()}
 render();setTimeout(()=>{$("#sp").classList.add("out");setTimeout(()=>$("#sp").remove(),400)},1900);
