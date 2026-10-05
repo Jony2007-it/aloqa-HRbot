@@ -187,11 +187,10 @@ class ApplyForm(StatesGroup):
 # ======================================================================
 
 def main_menu():
-    rows = []
-    if WEBAPP_URL:
-        rows.append([KeyboardButton(text="🚀 Mini ilovani ochish", web_app=WebAppInfo(url=WEBAPP_URL))])
-    rows.append([KeyboardButton(text="💼 Bo'sh ish o'rinlari")])
-    rows.append([KeyboardButton(text="📁 Portfolio"), KeyboardButton(text="❓ FAQ")])
+    rows = [
+        [KeyboardButton(text="💼 Bo'sh ish o'rinlari")],
+        [KeyboardButton(text="📁 Portfolio"), KeyboardButton(text="❓ FAQ")],
+    ]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True)
 
 
