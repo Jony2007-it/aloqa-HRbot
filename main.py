@@ -11,8 +11,6 @@ import time
 from urllib.parse import parse_qsl
 
 from aiogram import Bot, Dispatcher, Router, F
-from aiogram.types import BufferedInputFile
-from aiohttp import web
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
@@ -20,18 +18,26 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import (
-    Message,
+    BufferedInputFile,
     CallbackQuery,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
-    InlineKeyboardMarkup,
     InlineKeyboardButton,
-    WebAppInfo,
+    InlineKeyboardMarkup,
+    KeyboardButton,
     MenuButtonWebApp,
+    Message,
+    ReplyKeyboardMarkup,
+    WebAppInfo,
 )
+from aiohttp import web
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+def esc(v) -> str:
+    """Matnni Telegram HTML rejimi uchun xavfsiz qiladi."""
+    return html.escape(str(v if v is not None else ""))
+
 
 # ======================================================================
 #  SOZLAMALAR — shu qismni o'zingizga moslab o'zgartiring
@@ -48,7 +54,22 @@ if not ADMIN_IDS:
 COMPANY_NAME = "Aloqabor"
 COMPANY_TAGLINE = "Aloqa va texnologiyani birlashtiramiz"
 
-# "📁 Portfolio" tugmasi bosilganda chiqadigan matn
+# Mini ilova manzili (Railway domeni). "https://" yozilmagan bo'lsa, o'zi qo'shiladi.
+WEBAPP_URL = os.getenv("WEBAPP_URL", "").strip()
+if WEBAPP_URL and not WEBAPP_URL.startswith(("http://", "https://")):
+    WEBAPP_URL = "https://" + WEBAPP_URL
+
+# ----------------------------------------------------------------------
+#  TUGMA MATNLARI — menyudagi tugma va uning handler'i SHU YERDAN olinadi.
+#  Emoji yoki matnni faqat shu yerda o'zgartiring — boshqa joyga tegmang.
+# ----------------------------------------------------------------------
+BTN_VACANCIES = "❕ Bo'sh ish o'rinlari❕"
+BTN_PORTFOLIO = "📂 Portfolio"
+BTN_FAQ = "❓ FAQ"
+BTN_CANCEL = "❌ Bekor qilish"
+BTN_CONFIRM = "✅ Tasdiqlash va yuborish"
+
+# "Portfolio" tugmasi bosilganda chiqadigan matn
 PORTFOLIO_TEXT = (
     "<b>Aloqabor</b> — outsourcing call-center xizmati va IT avtomatlashtirish "
     "yo'nalishida ishlaydigan kompaniya.\n\n"
@@ -60,9 +81,6 @@ PORTFOLIO_TEXT = (
     "Loyiha namunalari va batafsil case-study'lar bilan suhbat davomida yaqindan "
     "tanishtiramiz. Jamoamizga qo'shilishga tayyormisiz? 🤝"
 )
-
-# Mini ilova (Telegram WebApp) manzili. GitHub Pages'ga joylashtirgach shu yerga to'liq https havolani kiriting.
-WEBAPP_URL = os.getenv("WEBAPP_URL", "")
 
 # Vakansiyalar — shu ro'yxatni o'zgartirish orqali lavozimlarni boshqarasiz
 VACANCY_DETAILS = {
@@ -188,8 +206,8 @@ class ApplyForm(StatesGroup):
 
 def main_menu():
     rows = [
-        [KeyboardButton(text="❕ Bo'sh ish o'rinlari❕")],
-        [KeyboardButton(text="📂 Portfolio"), KeyboardButton(text="❓ FAQ")],
+        [KeyboardButton(text=BTN_VACANCIES)],
+        [KeyboardButton(text=BTN_PORTFOLIO), KeyboardButton(text=BTN_FAQ)],
     ]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True)
 
@@ -234,7 +252,7 @@ def vacancies_reply_kb():
 
 def confirm_kb():
     return ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text="✅ Tasdiqlash va yuborish")], [KeyboardButton(text="❌ Bekor qilish")]],
+        keyboard=[[KeyboardButton(text=BTN_CONFIRM)], [KeyboardButton(text=BTN_CANCEL)]],
         resize_keyboard=True, one_time_keyboard=True,
     )
 
@@ -255,7 +273,7 @@ def faq_back_kb():
 router = Router()
 
 
-# ---- Start / Kompaniya ----
+# ---- Start / Portfolio ----
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext):
@@ -277,12 +295,12 @@ async def cmd_start(message: Message, state: FSMContext):
         await message.answer("Eng tezkor yo'l — mini ilovani shu yerdan oching:", reply_markup=kb)
 
 
-@router.message(F.text == "📁 Portfolio")
+@router.message(F.text == BTN_PORTFOLIO)
 async def company_info(message: Message):
     await message.answer(PORTFOLIO_TEXT, reply_markup=main_menu())
 
 
-@router.message(F.text == "❌ Bekor qilish")
+@router.message(F.text == BTN_CANCEL)
 async def cancel_anywhere(message: Message, state: FSMContext):
     await state.clear()
     await message.answer("Bekor qilindi. Asosiy menyuga qaytdingiz.", reply_markup=main_menu())
@@ -298,7 +316,7 @@ FAQ_INTRO = (
 )
 
 
-@router.message(F.text == "❓ FAQ")
+@router.message(F.text == BTN_FAQ)
 async def show_faq_menu(message: Message):
     await message.answer(FAQ_INTRO, reply_markup=faq_menu_kb())
 
@@ -327,7 +345,7 @@ VACANCIES_INTRO = (
 ).format(n=len(VACANCIES))
 
 
-@router.message(F.text == "💼 Bo'sh ish o'rinlari")
+@router.message(F.text == BTN_VACANCIES)
 async def show_vacancies(message: Message):
     await message.answer(VACANCIES_INTRO, reply_markup=vacancies_list_kb())
 
@@ -349,7 +367,7 @@ async def vacancy_detail(callback: CallbackQuery):
     await callback.answer()
 
 
-# ---- Ariza topshirish ----
+# ---- Ariza topshirish (bot ichida, bosqichma-bosqich) ----
 
 @router.callback_query(F.data.startswith("apply_"))
 async def start_apply_from_vacancy(callback: CallbackQuery, state: FSMContext):
@@ -426,7 +444,7 @@ async def get_experience_document(message: Message, state: FSMContext):
     await state.update_data(
         cv_type="document",
         cv_file_id=message.document.file_id,
-        experience=esc(message.caption) if message.caption else "CV fayli orqali yuborildi",
+        experience=message.caption if message.caption else "CV fayli orqali yuborildi",
     )
     await show_summary(message, state)
 
@@ -440,20 +458,21 @@ async def get_experience_text(message: Message, state: FSMContext):
 async def show_summary(message: Message, state: FSMContext):
     data = await state.get_data()
     await state.set_state(ApplyForm.confirm)
+    g = lambda k: esc(data.get(k))
     cv_line = "\n📎 CV fayli: biriktirilgan ✅" if data.get("cv_type") == "document" else ""
     await message.answer(
         "📋 <b>Ma'lumotlaringizni tekshiring</b> — hammasi to'g'rimi?\n\n"
-        f"👤 F.I.Sh: {data.get('full_name')}\n"
-        f"📱 Telefon: {data.get('phone')}\n"
-        f"🎂 Yosh: {data.get('age')}\n"
-        f"💼 Vakansiya: {data.get('vacancy')}\n"
-        f"🎓 Ta'lim/tajriba: {data.get('experience')}"
+        f"👤 F.I.Sh: {g('full_name')}\n"
+        f"📱 Telefon: {g('phone')}\n"
+        f"🎂 Yosh: {g('age')}\n"
+        f"💼 Vakansiya: {g('vacancy')}\n"
+        f"🎓 Ta'lim/tajriba: {g('experience')}"
         f"{cv_line}",
         reply_markup=confirm_kb(),
     )
 
 
-@router.message(ApplyForm.confirm, F.text == "✅ Tasdiqlash va yuborish")
+@router.message(ApplyForm.confirm, F.text == BTN_CONFIRM)
 async def confirm_application(message: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
     g = lambda k: esc(data.get(k))
@@ -481,6 +500,8 @@ async def confirm_application(message: Message, state: FSMContext, bot: Bot):
         reply_markup=main_menu(),
     )
 
+
+# ---- Mini ilovadan sendData orqali kelgan ariza (zaxira yo'l) ----
 
 @router.message(F.web_app_data)
 async def handle_webapp_data(message: Message, state: FSMContext, bot: Bot):
@@ -521,7 +542,6 @@ async def cv_extra_doc(message: Message, state: FSMContext, bot: Bot):
 # ======================================================================
 
 WEBAPP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webapp")
-esc = lambda v: html.escape(str(v if v is not None else ""))
 
 
 def verify_init_data(init_data: str, token: str, max_age: int = 172800):
